@@ -1,0 +1,190 @@
+syntax = "proto3";
+
+package anima;
+option go_package="protocol/;protocol";
+
+message Empty {}
+
+message IssueRequest {
+    IssDocument document = 1;
+    map<string, IssAttribute> attributes = 2;
+    IssProof proof = 3;
+}
+
+message IssDocument {
+    string specs = 1;
+    int64 issued_at = 2;
+    int64 expires_at = 3;
+    map<string, IssDocumentAttribute> attributes = 4;
+    AnimaOwner owner = 5;
+    IssAuthorization authorization = 6;
+}
+
+message IssAuthorization {
+    string specs = 1;
+    string content = 2;
+    string signature = 3;
+}
+
+message IssDocumentAttribute {
+    IssDocumentAttributeContent content = 1;
+    IssDocumentAttributeCredential credential = 2;
+}
+
+message IssDocumentAttributeContent {
+    string value = 1;
+    string type = 2;
+    string format = 3;
+    string name = 4;
+    AnimaOwner owner = 5;
+    IssAuthorization authorization = 6;
+}
+
+message IssDocumentAttributeCredential {
+    string specs = 1;
+    string id = 2;
+}
+
+message IssAttribute {
+    bytes value = 1;
+    IssDocumentAttributeContent content = 2;
+    IssAttributeCredential credential = 3;
+}
+
+message IssAttributeCredential {
+    IssAttributeCredentialContent content = 1;
+    string signature = 2;
+}
+
+message IssAttributeCredentialContent {
+    int64 issued_at = 1;
+    int64 expires_at = 2;
+    AnimaOwner owner = 4;
+    AnimaIssuer issuer = 5;
+    IssAttributeCredentialContentDocument document = 6;
+    IssAttributeCredentialContentAttribute attribute = 7;
+    IssAttributeCredentialContentProof proof = 8;
+}
+
+message IssAttributeCredentialContentDocument {
+    string id = 1;
+    string specs = 2;
+}
+
+message IssAttributeCredentialContentProof {
+    string id = 1;
+    string specs = 2;
+}
+
+message IssAttributeCredentialContentAttribute {
+    string id = 1;
+    string specs = 2;
+    string name = 3;
+    string hash = 4;
+}
+
+message IssProof {
+    string specs = 1;
+    string content = 2;
+    string signature = 3;
+}
+
+message VerifyRequest {
+    SharingAuthorization authorization = 1;
+}
+
+message VerifyResponse {
+    VerificationContent content = 1;
+    string signature = 2;
+}
+
+message VerificationContent {
+    AnimaVerifier verifier = 1;
+    AnimaOwner owner = 2;
+    AnimaIssuer issuer = 3;
+    AnimaProtocol protocol = 4;
+    VerificationProof proof = 5;
+    map<string, AnimaCredentialAttribute> credentials = 6;
+    SharingAuthorization authorization = 7;
+}
+
+message AnimaDocument {
+    string id = 1;
+    string specs = 2;
+}
+
+message AnimaAttribute {
+    string id = 1;
+    string specs = 2;
+}
+
+message AnimaProof {
+    string id = 1;
+    string specs = 2;
+}
+
+message AnimaCredentialAttribute {
+    AnimaOwner owner = 1;
+    AnimaIssuer issuer = 2;
+    AnimaDocument document = 3;
+    IssAttributeCredentialContentAttribute attribute = 4;
+    AnimaProof proof = 5;
+    int64 issued_at = 6;
+    int64 expires_at = 7;
+}
+
+message SharingAuthorization {
+    string specs = 1;
+    string content = 2;
+    string signature = 3;
+}
+
+message VerificationProof {
+    string specs = 1;
+    string content = 2;
+    string signature = 3;
+}
+
+message AnimaVerifier {
+    string id = 1;
+    string public_address = 2;
+    string chain = 3;
+}
+
+message AnimaOwner {
+    string id = 1;
+    string public_address = 2;
+    string chain = 3;
+    string wallet = 4;
+}
+
+message AnimaProtocol {
+    string id = 1;
+    string public_address = 2;
+    string chain = 3;    
+}
+
+message AnimaIssuer {
+    string id = 1;
+    string public_address = 2;
+    string chain = 3;    
+}
+
+message RegisterVerifierRequest {
+    string id = 1;
+    string public_address = 2;
+    string chain = 3;
+    bytes logo = 4;
+    string description = 5;
+    string name = 6;
+}
+
+message RegisterVerifierResponse {
+    string id = 1;
+}
+
+service Anima {
+    rpc Issue(IssueRequest) returns (Empty) {};
+    rpc Verify(VerifyRequest) returns (VerifyResponse) {};
+    rpc RegisterVerifier(RegisterVerifierRequest) returns (RegisterVerifierResponse) {};
+}
