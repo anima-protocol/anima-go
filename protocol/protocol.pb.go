@@ -7,6 +7,10 @@
 package protocol
 
 import (
+	"context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -2859,9 +2863,9 @@ var file_protocol_protocol_proto_rawDesc = []byte{
 	0x12, 0x38, 0x0a, 0x0b, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41, 0x6e, 0x69, 0x6d, 0x61, 0x12,
 	0x19, 0x2e, 0x61, 0x6e, 0x69, 0x6d, 0x61, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41, 0x6e,
 	0x69, 0x6d, 0x61, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0c, 0x2e, 0x61, 0x6e, 0x69,
-	0x6d, 0x61, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x42, 0x11, 0x5a, 0x0f, 0x61, 0x6e,
-	0x69, 0x6d, 0x61, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x3b, 0x67, 0x72, 0x70, 0x63, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6d, 0x61, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x42, 0x14, 0x5a, 0x12, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3478,4 +3482,383 @@ func file_protocol_protocol_proto_init() {
 	file_protocol_protocol_proto_rawDesc = nil
 	file_protocol_protocol_proto_goTypes = nil
 	file_protocol_protocol_proto_depIdxs = nil
+}
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
+const _ = grpc.SupportPackageIsVersion7
+
+// AnimaClient is the client API for Anima service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type AnimaClient interface {
+	Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	Issue(ctx context.Context, in *IssueRequest, opts ...grpc.CallOption) (*Empty, error)
+	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error)
+	RegisterVerifier(ctx context.Context, in *RegisterVerifierRequest, opts ...grpc.CallOption) (*RegisterVerifierResponse, error)
+	RequestAction(ctx context.Context, in *RequestActionRequest, opts ...grpc.CallOption) (*RequestActionResponse, error)
+	GrantTrustee(ctx context.Context, in *GrantTrusteeRequest, opts ...grpc.CallOption) (*Empty, error)
+	RevokeTrustee(ctx context.Context, in *RevokeTrusteeRequest, opts ...grpc.CallOption) (*Empty, error)
+	ListTrustees(ctx context.Context, in *ListTrusteesRequest, opts ...grpc.CallOption) (*ListTrusteesResponse, error)
+	DeleteAnima(ctx context.Context, in *DeleteAnimaRequest, opts ...grpc.CallOption) (*Empty, error)
+}
+
+type animaClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewAnimaClient(cc grpc.ClientConnInterface) AnimaClient {
+	return &animaClient{cc}
+}
+
+func (c *animaClient) Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, "/anima.Anima/Status", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *animaClient) Issue(ctx context.Context, in *IssueRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/anima.Anima/Issue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *animaClient) Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error) {
+	out := new(VerifyResponse)
+	err := c.cc.Invoke(ctx, "/anima.Anima/Verify", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *animaClient) RegisterVerifier(ctx context.Context, in *RegisterVerifierRequest, opts ...grpc.CallOption) (*RegisterVerifierResponse, error) {
+	out := new(RegisterVerifierResponse)
+	err := c.cc.Invoke(ctx, "/anima.Anima/RegisterVerifier", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *animaClient) RequestAction(ctx context.Context, in *RequestActionRequest, opts ...grpc.CallOption) (*RequestActionResponse, error) {
+	out := new(RequestActionResponse)
+	err := c.cc.Invoke(ctx, "/anima.Anima/RequestAction", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *animaClient) GrantTrustee(ctx context.Context, in *GrantTrusteeRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/anima.Anima/GrantTrustee", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *animaClient) RevokeTrustee(ctx context.Context, in *RevokeTrusteeRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/anima.Anima/RevokeTrustee", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *animaClient) ListTrustees(ctx context.Context, in *ListTrusteesRequest, opts ...grpc.CallOption) (*ListTrusteesResponse, error) {
+	out := new(ListTrusteesResponse)
+	err := c.cc.Invoke(ctx, "/anima.Anima/ListTrustees", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *animaClient) DeleteAnima(ctx context.Context, in *DeleteAnimaRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/anima.Anima/DeleteAnima", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AnimaServer is the server API for Anima service.
+// All implementations must embed UnimplementedAnimaServer
+// for forward compatibility
+type AnimaServer interface {
+	Status(context.Context, *StatusRequest) (*StatusResponse, error)
+	Issue(context.Context, *IssueRequest) (*Empty, error)
+	Verify(context.Context, *VerifyRequest) (*VerifyResponse, error)
+	RegisterVerifier(context.Context, *RegisterVerifierRequest) (*RegisterVerifierResponse, error)
+	RequestAction(context.Context, *RequestActionRequest) (*RequestActionResponse, error)
+	GrantTrustee(context.Context, *GrantTrusteeRequest) (*Empty, error)
+	RevokeTrustee(context.Context, *RevokeTrusteeRequest) (*Empty, error)
+	ListTrustees(context.Context, *ListTrusteesRequest) (*ListTrusteesResponse, error)
+	DeleteAnima(context.Context, *DeleteAnimaRequest) (*Empty, error)
+	mustEmbedUnimplementedAnimaServer()
+}
+
+// UnimplementedAnimaServer must be embedded to have forward compatible implementations.
+type UnimplementedAnimaServer struct {
+}
+
+func (UnimplementedAnimaServer) Status(context.Context, *StatusRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Status not implemented")
+}
+func (UnimplementedAnimaServer) Issue(context.Context, *IssueRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Issue not implemented")
+}
+func (UnimplementedAnimaServer) Verify(context.Context, *VerifyRequest) (*VerifyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
+}
+func (UnimplementedAnimaServer) RegisterVerifier(context.Context, *RegisterVerifierRequest) (*RegisterVerifierResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterVerifier not implemented")
+}
+func (UnimplementedAnimaServer) RequestAction(context.Context, *RequestActionRequest) (*RequestActionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RequestAction not implemented")
+}
+func (UnimplementedAnimaServer) GrantTrustee(context.Context, *GrantTrusteeRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GrantTrustee not implemented")
+}
+func (UnimplementedAnimaServer) RevokeTrustee(context.Context, *RevokeTrusteeRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RevokeTrustee not implemented")
+}
+func (UnimplementedAnimaServer) ListTrustees(context.Context, *ListTrusteesRequest) (*ListTrusteesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListTrustees not implemented")
+}
+func (UnimplementedAnimaServer) DeleteAnima(context.Context, *DeleteAnimaRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAnima not implemented")
+}
+func (UnimplementedAnimaServer) mustEmbedUnimplementedAnimaServer() {}
+
+// UnsafeAnimaServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AnimaServer will
+// result in compilation errors.
+type UnsafeAnimaServer interface {
+	mustEmbedUnimplementedAnimaServer()
+}
+
+func RegisterAnimaServer(s grpc.ServiceRegistrar, srv AnimaServer) {
+	s.RegisterService(&Anima_ServiceDesc, srv)
+}
+
+func _Anima_Status_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).Status(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/Status",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).Status(ctx, req.(*StatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Anima_Issue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IssueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).Issue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/Issue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).Issue(ctx, req.(*IssueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Anima_Verify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).Verify(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/Verify",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).Verify(ctx, req.(*VerifyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Anima_RegisterVerifier_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterVerifierRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).RegisterVerifier(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/RegisterVerifier",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).RegisterVerifier(ctx, req.(*RegisterVerifierRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Anima_RequestAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestActionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).RequestAction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/RequestAction",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).RequestAction(ctx, req.(*RequestActionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Anima_GrantTrustee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GrantTrusteeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).GrantTrustee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/GrantTrustee",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).GrantTrustee(ctx, req.(*GrantTrusteeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Anima_RevokeTrustee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeTrusteeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).RevokeTrustee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/RevokeTrustee",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).RevokeTrustee(ctx, req.(*RevokeTrusteeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Anima_ListTrustees_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListTrusteesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).ListTrustees(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/ListTrustees",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).ListTrustees(ctx, req.(*ListTrusteesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Anima_DeleteAnima_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAnimaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).DeleteAnima(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/DeleteAnima",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).DeleteAnima(ctx, req.(*DeleteAnimaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Anima_ServiceDesc is the grpc.ServiceDesc for Anima service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Anima_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "anima.Anima",
+	HandlerType: (*AnimaServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Status",
+			Handler:    _Anima_Status_Handler,
+		},
+		{
+			MethodName: "Issue",
+			Handler:    _Anima_Issue_Handler,
+		},
+		{
+			MethodName: "Verify",
+			Handler:    _Anima_Verify_Handler,
+		},
+		{
+			MethodName: "RegisterVerifier",
+			Handler:    _Anima_RegisterVerifier_Handler,
+		},
+		{
+			MethodName: "RequestAction",
+			Handler:    _Anima_RequestAction_Handler,
+		},
+		{
+			MethodName: "GrantTrustee",
+			Handler:    _Anima_GrantTrustee_Handler,
+		},
+		{
+			MethodName: "RevokeTrustee",
+			Handler:    _Anima_RevokeTrustee_Handler,
+		},
+		{
+			MethodName: "ListTrustees",
+			Handler:    _Anima_ListTrustees_Handler,
+		},
+		{
+			MethodName: "DeleteAnima",
+			Handler:    _Anima_DeleteAnima_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "protocol/protocol.proto",
 }
