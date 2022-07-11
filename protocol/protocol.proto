@@ -59,8 +59,9 @@ message IssDocumentAttributeCredential {
 
 message IssAttribute {
     bytes value = 1;
-    IssDocumentAttributeContent content = 2;
-    IssAttributeCredential credential = 3;
+    repeated bytes values = 2;
+    IssDocumentAttributeContent content = 3;
+    IssAttributeCredential credential = 4;
 }
 
 message IssAttributeCredential {
