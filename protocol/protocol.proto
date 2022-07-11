@@ -45,7 +45,7 @@ message IssDocumentAttribute {
 }
 
 message IssDocumentAttributeContent {
-    repeated google.protobuf.Any value = 1;
+    google.protobuf.Any value = 1;
     string type = 2;
     string format = 3;
     string name = 4;
