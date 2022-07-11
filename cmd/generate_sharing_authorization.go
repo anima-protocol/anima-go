@@ -122,10 +122,6 @@ func main() {
 			},
 			"Attributes": []apitypes.Type{
 				{
-					Name: "liveness_photo",
-					Type: "string",
-				},
-				{
 					Name: "nationality",
 					Type: "string",
 				},
@@ -135,8 +131,7 @@ func main() {
 			"specs":     "anima:specs:sharing/authorization@1.0.0",
 			"shared_at": uint64(time.Now().Unix()),
 			"attributes": apitypes.TypedDataMessage{
-				"liveness_photo": "anima:credential:b19f1a633703d976d70482086dded4d4a40de463d01d4ba2cce8b1b639bc57b1",
-				"nationality":    "anima:credential:c89f03c2e562021010a9f8e367c375e75a273557fe1edf5b2898d58c31883fba",
+				"nationality": "anima:credential:87d0e5373127045c02cd817569d66042727295cafb38b525c410266f4f653e19",
 			},
 			"owner": apitypes.TypedDataMessage{
 				"id":             "anima:owner:0x017f912f75c4140699606Ddb8418Ec944AAbCEBA",

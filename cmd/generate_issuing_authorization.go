@@ -30,6 +30,7 @@ const (
 	ID                     = "anima:specs:document/national_id@1.0.0"
 	DRIVER_LICENSE         = "anima:specs:document/driver_license@1.0.0"
 	RESIDENT_PERMIT        = "anima:specs:document/resident_permit@1.0.0"
+	FACE                   = "anima:specs:document/liveness@1.0.0"
 )
 
 var documentSpecsName = []string{
@@ -37,6 +38,7 @@ var documentSpecsName = []string{
 	ID,
 	DRIVER_LICENSE,
 	RESIDENT_PERMIT,
+	FACE,
 }
 
 func loadEnv() {
@@ -55,21 +57,34 @@ func getEnv(evar string) string {
 	return val
 }
 
-func generateFields(specs string) map[string]string {
+func generateFields(specs string) map[string]interface{} {
 	switch specs {
 	case PASSORT:
-		return map[string]string{
+		return map[string]interface{}{
 			"passport_page":  "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
 			"liveness_photo": "dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986",
 		}
 	case ID, DRIVER_LICENSE, RESIDENT_PERMIT:
-		return map[string]string{
+		return map[string]interface{}{
 			"document_front": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
 			"document_back":  "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a",
 			"liveness_photo": "dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986",
 		}
+	case FACE:
+		return map[string]interface{}{
+			"face_vector": "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
+			"audit_trail": []string{
+				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
+				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
+				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
+				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
+				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
+				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
+			},
+		}
 	}
-	return map[string]string{}
+
+	return map[string]interface{}{}
 }
 
 func generateAttributes(specs string) map[string]bool {
@@ -111,6 +126,11 @@ func generateAttributes(specs string) map[string]bool {
 			"document_back":       true,
 			"liveness_photo":      true,
 		}
+	case FACE:
+		return map[string]bool{
+			"face_vector": true,
+			"audit_trail": true,
+		}
 	}
 	return map[string]bool{}
 }
@@ -141,6 +161,17 @@ func generateFieldsTypes(specs string) []apitypes.Type {
 			{
 				Name: "liveness_photo",
 				Type: "string",
+			},
+		}
+	case FACE:
+		return []apitypes.Type{
+			{
+				Name: "face_vector",
+				Type: "string",
+			},
+			{
+				Name: "audit_trail",
+				Type: "string[]",
 			},
 		}
 	}
@@ -267,6 +298,17 @@ func generateAttributesTypes(specs string) []apitypes.Type {
 			},
 			{
 				Name: "liveness_photo",
+				Type: "bool",
+			},
+		}
+	case FACE:
+		return []apitypes.Type{
+			{
+				Name: "face_vector",
+				Type: "bool",
+			},
+			{
+				Name: "audit_trail",
 				Type: "bool",
 			},
 		}
@@ -406,12 +448,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	challengeHash, _ := evm.GetEIP712Message(challenge)
+	challengeHash, err := evm.GetEIP712Message(challenge)
 
+	fmt.Printf("%v\n", err)
 	privateKey, _ := crypto.HexToECDSA(PRIVATE_OWNER_SIGNING_KEY)
 	signature, err := crypto.Sign(challengeHash, privateKey)
 	if err != nil {
-		fmt.Printf("%v\n", err)
+		fmt.Printf("Error while signing: %v\n", err)
 		os.Exit(1)
 	}
 	if *validPtr == false {

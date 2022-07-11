@@ -13,8 +13,8 @@ import (
 	"github.com/anima-protocol/anima-go/protocol"
 )
 
-func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *protocol.IssueRequest, signingFunc func([]byte) (string, error)) (*protocol.IssueRequest, error) {
-	issuingAuthorization, err := GetIssuingAuthorization(request)
+func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *protocol.IssueDocumentRequest, signingFunc func([]byte) (string, error)) (*protocol.IssueDocumentRequest, error) {
+	issuingAuthorization, err := GetIssuingAuthorization(request.Document)
 	if err != nil {
 		return nil, err
 	}
