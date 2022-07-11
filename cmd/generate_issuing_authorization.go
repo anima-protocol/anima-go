@@ -61,14 +61,12 @@ func generateFields(specs string) map[string]interface{} {
 	switch specs {
 	case PASSORT:
 		return map[string]interface{}{
-			"passport_page":  "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
-			"liveness_photo": "dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986",
+			"passport_page": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
 		}
 	case ID, DRIVER_LICENSE, RESIDENT_PERMIT:
 		return map[string]interface{}{
 			"document_front": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
 			"document_back":  "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a",
-			"liveness_photo": "dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986",
 		}
 	case FACE:
 		return map[string]interface{}{
@@ -99,7 +97,6 @@ func generateAttributes(specs string) map[string]bool {
 			"document_number":     true,
 			"document_expiration": true,
 			"passport_page":       true,
-			"liveness_photo":      true,
 		}
 	case ID, RESIDENT_PERMIT:
 		return map[string]bool{
@@ -112,7 +109,6 @@ func generateAttributes(specs string) map[string]bool {
 			"document_expiration": true,
 			"document_front":      true,
 			"document_back":       true,
-			"liveness_photo":      true,
 		}
 	case DRIVER_LICENSE:
 		return map[string]bool{
@@ -124,7 +120,6 @@ func generateAttributes(specs string) map[string]bool {
 			"document_expiration": true,
 			"document_front":      true,
 			"document_back":       true,
-			"liveness_photo":      true,
 		}
 	case FACE:
 		return map[string]bool{
@@ -143,10 +138,6 @@ func generateFieldsTypes(specs string) []apitypes.Type {
 				Name: "passport_page",
 				Type: "string",
 			},
-			{
-				Name: "liveness_photo",
-				Type: "string",
-			},
 		}
 	case ID, RESIDENT_PERMIT, DRIVER_LICENSE:
 		return []apitypes.Type{
@@ -156,10 +147,6 @@ func generateFieldsTypes(specs string) []apitypes.Type {
 			},
 			{
 				Name: "document_back",
-				Type: "string",
-			},
-			{
-				Name: "liveness_photo",
 				Type: "string",
 			},
 		}
@@ -214,10 +201,6 @@ func generateAttributesTypes(specs string) []apitypes.Type {
 				Name: "passport_page",
 				Type: "bool",
 			},
-			{
-				Name: "liveness_photo",
-				Type: "bool",
-			},
 		}
 	case ID, RESIDENT_PERMIT:
 		return []apitypes.Type{
@@ -257,10 +240,6 @@ func generateAttributesTypes(specs string) []apitypes.Type {
 				Name: "document_back",
 				Type: "bool",
 			},
-			{
-				Name: "liveness_photo",
-				Type: "bool",
-			},
 		}
 	case DRIVER_LICENSE:
 		return []apitypes.Type{
@@ -294,10 +273,6 @@ func generateAttributesTypes(specs string) []apitypes.Type {
 			},
 			{
 				Name: "document_back",
-				Type: "bool",
-			},
-			{
-				Name: "liveness_photo",
 				Type: "bool",
 			},
 		}
