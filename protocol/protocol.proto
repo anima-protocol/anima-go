@@ -3,8 +3,6 @@ syntax = "proto3";
 package anima;
 option go_package="protocol/;protocol";
 
-import "google/protobuf/any.proto";
-
 message Empty {}
 
 message IssueDocumentRequest {
@@ -45,12 +43,13 @@ message IssDocumentAttribute {
 }
 
 message IssDocumentAttributeContent {
-    google.protobuf.Any value = 1;
-    string type = 2;
-    string format = 3;
-    string name = 4;
-    AnimaOwner owner = 5;
-    IssAuthorization authorization = 6;
+    string value = 1;
+    repeated string values = 2;
+    string type = 3;
+    string format = 4;
+    string name = 5;
+    AnimaOwner owner = 6;
+    IssAuthorization authorization = 7;
 }
 
 message IssDocumentAttributeCredential {
