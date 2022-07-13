@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/anima-protocol/anima-go/chains/evm"
@@ -55,18 +56,35 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 	issuedAt := time.Now().Unix()
 	// Sign Attributes
 	for name := range request.Attributes {
+		attrType := request.Document.Attributes[name].Content.Type
+
 		request.Attributes[name].Content = &protocol.IssDocumentAttributeContent{
-			Value:         request.Document.Attributes[name].Content.Value,
-			Type:          request.Document.Attributes[name].Content.Type,
+			Type:          attrType,
 			Name:          request.Document.Attributes[name].Content.Name,
 			Format:        request.Document.Attributes[name].Content.Format,
 			Authorization: request.Document.Authorization,
 			Owner:         owner,
 		}
+		contentHashes := []string{}
+		contentHash := ""
 
-		contentHash := crypto.HashStr(request.Document.Attributes[name].Content.Value)
-		if request.Attributes[name].Content.Type == "file" {
-			contentHash = request.Document.Attributes[name].Content.Value
+		if strings.HasSuffix(attrType, "[]") {
+			request.Attributes[name].Content.Values = request.Document.Attributes[name].Content.Values
+
+			if strings.HasPrefix(attrType, "file") {
+				contentHashes = request.Document.Attributes[name].Content.Values
+			} else {
+				for _, value := range request.Document.Attributes[name].Content.Values {
+					contentHashes = append(contentHashes, crypto.HashStr(value))
+				}
+			}
+		} else {
+			request.Attributes[name].Content.Value = request.Document.Attributes[name].Content.Value
+			if request.Attributes[name].Content.Type == "file" {
+				contentHash = request.Document.Attributes[name].Content.Value
+			} else {
+				contentHash = crypto.HashStr(request.Document.Attributes[name].Content.Value)
+			}
 		}
 
 		attrBytes, err := json.Marshal(request.Attributes[name].Content)
@@ -100,6 +118,11 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 				Content:   request.Document.Authorization.Content,
 				Signature: request.Document.Authorization.Signature,
 			},
+		}
+		if strings.HasSuffix(attrType, "[]") {
+			request.Attributes[name].Credential.Content.Attribute.Hashes = contentHashes
+		} else {
+			request.Attributes[name].Credential.Content.Attribute.Hash = contentHash
 		}
 
 		request.Document.Attributes[name].Credential = &protocol.IssDocumentAttributeCredential{
