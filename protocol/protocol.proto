@@ -101,6 +101,7 @@ message IssAttributeCredentialContentAttribute {
     string specs = 2;
     string name = 3;
     string hash = 4;
+    repeated string hashes = 5;
 }
 
 message IssProof {
