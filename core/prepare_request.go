@@ -14,20 +14,20 @@ func PrepareIssuingRequest(request *protocol.IssueRequest) error {
 			return fmt.Errorf("try to issue document without liveness document")
 		}
 
-		docBytes, err := json.Marshal(request.Document.Document)
+		livenessBytes, err := json.Marshal(request.Liveness.Document)
 		if err != nil {
 			return err
 		}
 
-		docContentBytes := new(bytes.Buffer)
-		err = json.Compact(docContentBytes, docBytes)
+		livenessContentBytes := new(bytes.Buffer)
+		err = json.Compact(livenessContentBytes, livenessBytes)
 		if err != nil {
 			return err
 		}
 
 		request.Document.Document.Liveness = &protocol.IssLiveness{
 			Specs: request.Liveness.Document.Specs,
-			Id:    fmt.Sprintf("anima:document:%s", crypto.Hash(docContentBytes.Bytes())),
+			Id:    fmt.Sprintf("anima:document:%s", crypto.Hash(livenessContentBytes.Bytes())),
 		}
 	}
 	return nil
