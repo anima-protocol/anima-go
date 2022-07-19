@@ -8,13 +8,13 @@ import (
 	"github.com/anima-protocol/anima-go/protocol"
 )
 
-func PrepareIssuingRequest(request *protocol.IssueRequest) error {
-	if request.Document != nil {
-		if request.Liveness == nil {
+func PrepareIssuingRequest(liveness *protocol.IssueDocumentRequest, doc *protocol.IssueDocumentRequest) error {
+	if doc != nil {
+		if liveness == nil {
 			return fmt.Errorf("try to issue document without liveness document")
 		}
 
-		livenessBytes, err := json.Marshal(request.Liveness.Document)
+		livenessBytes, err := json.Marshal(liveness.Document)
 		if err != nil {
 			return err
 		}
@@ -25,8 +25,8 @@ func PrepareIssuingRequest(request *protocol.IssueRequest) error {
 			return err
 		}
 
-		request.Document.Document.Liveness = &protocol.IssLiveness{
-			Specs: request.Liveness.Document.Specs,
+		doc.Document.Liveness = &protocol.IssLiveness{
+			Specs: liveness.Document.Specs,
 			Id:    fmt.Sprintf("anima:document:%s", crypto.Hash(livenessContentBytes.Bytes())),
 		}
 	}
