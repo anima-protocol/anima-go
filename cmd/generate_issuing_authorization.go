@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/anima-protocol/anima-go/chains/evm"
+	crypto2 "github.com/anima-protocol/anima-go/crypto"
 	"github.com/anima-protocol/anima-go/models"
 	"github.com/anima-protocol/anima-go/utils"
 	"github.com/ethereum/go-ethereum/common/math"
@@ -72,12 +73,12 @@ func generateFields(specs string) map[string]interface{} {
 		return map[string]interface{}{
 			"face_vector": "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
 			"audit_trail": []string{
-				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
-				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
-				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
-				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
-				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
-				"35a0293f2a774e58f10f4bf487f099293ce05d898b1129ba2464fdb292717753",
+				crypto2.HashStr("audit_trail0"),
+				crypto2.HashStr("audit_trail1"),
+				crypto2.HashStr("audit_trail2"),
+				crypto2.HashStr("audit_trail3"),
+				crypto2.HashStr("audit_trail4"),
+				crypto2.HashStr("audit_trail5"),
 			},
 		}
 	}
