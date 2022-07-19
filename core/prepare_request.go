@@ -26,7 +26,7 @@ func PrepareIssuingRequest(request *protocol.IssueRequest) error {
 		}
 
 		request.Document.Document.Liveness = &protocol.IssLiveness{
-			Specs: request.Liveness.Document.Authorization.Specs,
+			Specs: request.Liveness.Document.Specs,
 			Id:    fmt.Sprintf("anima:document:%s", crypto.Hash(docContentBytes.Bytes())),
 		}
 	}
