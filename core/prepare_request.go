@@ -8,7 +8,7 @@ import (
 	"github.com/anima-protocol/anima-go/protocol"
 )
 
-func PrepareIssuingRequest(liveness *protocol.IssueDocumentRequest, doc *protocol.IssueDocumentRequest) error {
+func AddLivenessToIssuingDocument(liveness *protocol.IssueDocumentRequest, doc *protocol.IssueDocumentRequest) error {
 	if doc != nil {
 		if liveness == nil {
 			return fmt.Errorf("try to issue document without liveness document")
