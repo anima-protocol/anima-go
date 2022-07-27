@@ -122,7 +122,11 @@ func main() {
 			},
 			"Attributes": []apitypes.Type{
 				{
-					Name: "nationality",
+					Name: "document_front",
+					Type: "string",
+				},
+				{
+					Name: "firstname",
 					Type: "string",
 				},
 			},
@@ -131,7 +135,8 @@ func main() {
 			"specs":     "anima:specs:sharing/authorization@1.0.0",
 			"shared_at": uint64(time.Now().Unix()),
 			"attributes": apitypes.TypedDataMessage{
-				"nationality": "anima:credential:87d0e5373127045c02cd817569d66042727295cafb38b525c410266f4f653e19",
+				"document_front": "anima:credential:7aeaffeb4913b428fa357f55d54d70b7bf0678a7282227193181b5d8065de5f3",
+				"firstname":      "anima:credential:4403186310d2cb3c15501d5cf216eacc00a479c6ade49eb23968a729b36f7cdc",
 			},
 			"owner": apitypes.TypedDataMessage{
 				"id":             "anima:owner:0x017f912f75c4140699606Ddb8418Ec944AAbCEBA",

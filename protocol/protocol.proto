@@ -254,6 +254,7 @@ message RequestActionResponse {
 service Anima {
     rpc Status(StatusRequest) returns (StatusResponse) {};
     rpc Issue(IssueRequest) returns (Empty) {};
+    rpc CreateAnima(IssueDocumentRequest) returns (Empty) {};
     rpc Verify(VerifyRequest) returns (VerifyResponse) {};
     rpc RegisterVerifier(RegisterVerifierRequest) returns (RegisterVerifierResponse) {};
     rpc RequestAction(RequestActionRequest) returns (RequestActionResponse) {};

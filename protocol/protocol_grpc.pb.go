@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AnimaClient interface {
 	Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	Issue(ctx context.Context, in *IssueRequest, opts ...grpc.CallOption) (*Empty, error)
+	CreateAnima(ctx context.Context, in *IssueDocumentRequest, opts ...grpc.CallOption) (*Empty, error)
 	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error)
 	RegisterVerifier(ctx context.Context, in *RegisterVerifierRequest, opts ...grpc.CallOption) (*RegisterVerifierResponse, error)
 	RequestAction(ctx context.Context, in *RequestActionRequest, opts ...grpc.CallOption) (*RequestActionResponse, error)
@@ -53,6 +54,15 @@ func (c *animaClient) Status(ctx context.Context, in *StatusRequest, opts ...grp
 func (c *animaClient) Issue(ctx context.Context, in *IssueRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/anima.Anima/Issue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *animaClient) CreateAnima(ctx context.Context, in *IssueDocumentRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/anima.Anima/CreateAnima", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -128,6 +138,7 @@ func (c *animaClient) DeleteAnima(ctx context.Context, in *DeleteAnimaRequest, o
 type AnimaServer interface {
 	Status(context.Context, *StatusRequest) (*StatusResponse, error)
 	Issue(context.Context, *IssueRequest) (*Empty, error)
+	CreateAnima(context.Context, *IssueDocumentRequest) (*Empty, error)
 	Verify(context.Context, *VerifyRequest) (*VerifyResponse, error)
 	RegisterVerifier(context.Context, *RegisterVerifierRequest) (*RegisterVerifierResponse, error)
 	RequestAction(context.Context, *RequestActionRequest) (*RequestActionResponse, error)
@@ -147,6 +158,9 @@ func (UnimplementedAnimaServer) Status(context.Context, *StatusRequest) (*Status
 }
 func (UnimplementedAnimaServer) Issue(context.Context, *IssueRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Issue not implemented")
+}
+func (UnimplementedAnimaServer) CreateAnima(context.Context, *IssueDocumentRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAnima not implemented")
 }
 func (UnimplementedAnimaServer) Verify(context.Context, *VerifyRequest) (*VerifyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
@@ -214,6 +228,24 @@ func _Anima_Issue_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AnimaServer).Issue(ctx, req.(*IssueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Anima_CreateAnima_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IssueDocumentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).CreateAnima(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/CreateAnima",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).CreateAnima(ctx, req.(*IssueDocumentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -358,6 +390,10 @@ var Anima_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Issue",
 			Handler:    _Anima_Issue_Handler,
+		},
+		{
+			MethodName: "CreateAnima",
+			Handler:    _Anima_CreateAnima_Handler,
 		},
 		{
 			MethodName: "Verify",
