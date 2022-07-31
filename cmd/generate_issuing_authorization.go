@@ -77,14 +77,7 @@ func generateFields(specs string) map[string]interface{} {
 	case LIVENESS:
 		return map[string]interface{}{
 			"face_vector": "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
-			"audit_trail": []string{
-				crypto2.HashStr("audit_trail0"),
-				crypto2.HashStr("audit_trail1"),
-				crypto2.HashStr("audit_trail2"),
-				crypto2.HashStr("audit_trail3"),
-				crypto2.HashStr("audit_trail4"),
-				crypto2.HashStr("audit_trail5"),
-			},
+			"audit_trail": crypto2.HashStr("audit_trail"),
 		}
 	case FACE:
 		return map[string]interface{}{
@@ -189,7 +182,7 @@ func generateFieldsTypes(specs string) []apitypes.Type {
 			},
 			{
 				Name: "audit_trail",
-				Type: "string[]",
+				Type: "string",
 			},
 		}
 	case FACE:
