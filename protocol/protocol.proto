@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package anima;
-option go_package="anima/grpc;grpc";
+option go_package="protocol/;protocol";
 
 message Empty {}
 
