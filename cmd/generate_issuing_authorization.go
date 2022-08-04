@@ -64,14 +64,11 @@ func generateFields(specs string) map[string]interface{} {
 	switch specs {
 	case PASSORT:
 		return map[string]interface{}{
-			"passport_page":          "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
 			"original_passport_page": "41a4547b3caa10e7c81789a02ccf8f28f861ad5e58d29ea6ac4b004e179c05c2",
 		}
 	case ID, DRIVER_LICENSE, RESIDENT_PERMIT:
 		return map[string]interface{}{
-			"document_front":          "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
 			"original_document_front": "fb2e6923ee3290f90adb76851a6b515b1ac50c976285eb3b68bb2b091457cd7f",
-			"document_back":           "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a",
 			"original_document_back":  "ac521e88646e7cdf7685f5d4e5447bd982eade98429e46111064b0462d84cb95",
 		}
 	case LIVENESS:
@@ -147,10 +144,6 @@ func generateFieldsTypes(specs string) []apitypes.Type {
 	case PASSORT:
 		return []apitypes.Type{
 			{
-				Name: "passport_page",
-				Type: "string",
-			},
-			{
 				Name: "original_passport_page",
 				Type: "string",
 			},
@@ -158,15 +151,7 @@ func generateFieldsTypes(specs string) []apitypes.Type {
 	case ID, RESIDENT_PERMIT, DRIVER_LICENSE:
 		return []apitypes.Type{
 			{
-				Name: "document_front",
-				Type: "string",
-			},
-			{
 				Name: "original_document_front",
-				Type: "string",
-			},
-			{
-				Name: "document_back",
 				Type: "string",
 			},
 			{

@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package anima;
-option go_package="protocol/;protocol";
+option go_package="anima/grpc;grpc";
 
 message Empty {}
 
@@ -119,7 +119,7 @@ message VerifyResponse {
     string signature = 2;
 }
 
-message VerificationContent {
+message VerificationDocument {
     AnimaVerifier verifier = 1;
     AnimaOwner owner = 2;
     AnimaIssuer issuer = 3;
@@ -127,6 +127,11 @@ message VerificationContent {
     VerificationProof proof = 5;
     map<string, AnimaCredentialAttribute> credentials = 6;
     SharingAuthorization authorization = 7;
+}
+
+message VerificationContent {
+    VerificationDocument document = 1;
+    VerificationDocument liveness = 2;
 }
 
 message AnimaDocument {
