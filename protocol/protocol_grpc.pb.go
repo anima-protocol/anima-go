@@ -4,7 +4,7 @@
 // - protoc             v3.19.4
 // source: protocol/protocol.proto
 
-package grpc
+package protocol
 
 import (
 	context "context"

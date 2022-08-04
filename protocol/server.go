@@ -3,6 +3,8 @@ package protocol
 import (
 	"crypto/tls"
 	"fmt"
+	"google.golang.org/grpc/keepalive"
+	"time"
 
 	"github.com/anima-protocol/anima-go/models"
 	"google.golang.org/grpc"
@@ -23,7 +25,13 @@ func Init(config *Config, protocol *models.Protocol) error {
 			InsecureSkipVerify: true,
 		})
 
-		opts := []grpc.DialOption{}
+		opts := []grpc.DialOption{
+			grpc.WithKeepaliveParams(keepalive.ClientParameters{
+				Time:                5 * time.Minute,
+				Timeout:             20 * time.Second,
+				PermitWithoutStream: true,
+			}),
+		}
 
 		if config.Secure {
 			opts = append(opts, grpc.WithTransportCredentials(creds))
