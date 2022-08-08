@@ -7,10 +7,10 @@ import (
 	"github.com/anima-protocol/anima-go/protocol"
 )
 
-func GetIssuingAuthorization(request *protocol.IssueRequest) (*models.IssuingAuthorization, error) {
-	specs := request.Document.Authorization.Specs
-	encodedContent := request.Document.Authorization.Content
-	signature := request.Document.Authorization.Signature
+func GetIssuingAuthorization(document *protocol.IssDocument) (*models.IssuingAuthorization, error) {
+	specs := document.Authorization.Specs
+	encodedContent := document.Authorization.Content
+	signature := document.Authorization.Signature
 
 	content, err := base64.StdEncoding.DecodeString(encodedContent)
 	if err != nil {

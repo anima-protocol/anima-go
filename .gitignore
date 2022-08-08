@@ -21,3 +21,6 @@ go.work
 .DS_Store
 tmp/
 generate_grpc.sh
+
+# idea
+.idea
