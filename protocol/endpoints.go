@@ -88,3 +88,78 @@ func RegisterVerifier(anima *models.Protocol, req *RegisterVerifierRequest) (*Re
 
 	return res, nil
 }
+
+func RequestAction(anima *models.Protocol, req *RequestActionRequest) (*RequestActionResponse, error) {
+	config := &Config{Secure: anima.Secure}
+	err := Init(config, anima)
+	if err != nil {
+		return &RequestActionResponse{}, err
+	}
+
+	res, err := client.RequestAction(context.Background(), req)
+	if err != nil {
+		return &RequestActionResponse{}, err
+	}
+
+	return res, nil
+}
+
+func GrantTrustee(anima *models.Protocol, req *GrantTrusteeRequest) (*Empty, error) {
+	config := &Config{Secure: anima.Secure}
+	err := Init(config, anima)
+	if err != nil {
+		return &Empty{}, err
+	}
+
+	res, err := client.GrantTrustee(context.Background(), req)
+	if err != nil {
+		return &Empty{}, err
+	}
+
+	return res, nil
+}
+
+func RevokeTrustee(anima *models.Protocol, req *RevokeTrusteeRequest) (*Empty, error) {
+	config := &Config{Secure: anima.Secure}
+	err := Init(config, anima)
+	if err != nil {
+		return &Empty{}, err
+	}
+
+	res, err := client.RevokeTrustee(context.Background(), req)
+	if err != nil {
+		return &Empty{}, err
+	}
+
+	return res, nil
+}
+
+func ListTrustees(anima *models.Protocol, req *ListTrusteesRequest) (*ListTrusteesResponse, error) {
+	config := &Config{Secure: anima.Secure}
+	err := Init(config, anima)
+	if err != nil {
+		return &ListTrusteesResponse{}, err
+	}
+
+	res, err := client.ListTrustees(context.Background(), req)
+	if err != nil {
+		return &ListTrusteesResponse{}, err
+	}
+
+	return res, nil
+}
+
+func DeleteAnima(anima *models.Protocol, req *DeleteAnimaRequest) (*Empty, error) {
+	config := &Config{Secure: anima.Secure}
+	err := Init(config, anima)
+	if err != nil {
+		return &Empty{}, err
+	}
+
+	res, err := client.DeleteAnima(context.Background(), req)
+	if err != nil {
+		return &Empty{}, err
+	}
+
+	return res, nil
+}
