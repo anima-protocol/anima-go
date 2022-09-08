@@ -35,8 +35,12 @@ func Init(config *Config, protocol *models.Protocol) error {
 
 		if config.Secure {
 			opts = append(opts, grpc.WithTransportCredentials(creds))
+			opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(100000000)))
+			opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallSendMsgSize(100000000)))
 		} else {
 			opts = append(opts, grpc.WithInsecure())
+			opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(100000000)))
+			opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallSendMsgSize(100000000)))
 		}
 
 		fmt.Printf("-> network: %v\n", protocol.Network)
