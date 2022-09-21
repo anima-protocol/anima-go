@@ -1,15 +1,18 @@
 package main
 
 import (
+	"crypto/ed25519"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
+	elrond "github.com/anima-protocol/anima-go/chains/elrond"
 	"github.com/anima-protocol/anima-go/chains/evm"
 	crypto2 "github.com/anima-protocol/anima-go/crypto"
 	"github.com/anima-protocol/anima-go/models"
 	"github.com/anima-protocol/anima-go/utils"
+	"github.com/btcsuite/btcutil/bech32"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
@@ -73,12 +76,13 @@ func generateFields(specs string) map[string]interface{} {
 		}
 	case LIVENESS:
 		return map[string]interface{}{
-			"face_vector": "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
+			"zk_facemap":  "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
 			"audit_trail": crypto2.HashStr("audit_trail"),
+			"face":        crypto2.HashStr("face"),
 		}
 	case FACE:
 		return map[string]interface{}{
-			"face_vector": "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
+			"zk_facemap": "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
 		}
 	}
 
@@ -128,12 +132,13 @@ func generateAttributes(specs string) map[string]bool {
 		}
 	case LIVENESS:
 		return map[string]bool{
-			"face_vector": true,
+			"zk_facemap":  true,
 			"audit_trail": true,
+			"face":        true,
 		}
 	case FACE:
 		return map[string]bool{
-			"face_vector": true,
+			"zk_facemap": true,
 		}
 	}
 	return map[string]bool{}
@@ -162,18 +167,22 @@ func generateFieldsTypes(specs string) []apitypes.Type {
 	case LIVENESS:
 		return []apitypes.Type{
 			{
-				Name: "face_vector",
+				Name: "zk_facemap",
 				Type: "string",
 			},
 			{
 				Name: "audit_trail",
 				Type: "string",
 			},
+			{
+				Name: "face",
+				Type: "string",
+			},
 		}
 	case FACE:
 		return []apitypes.Type{
 			{
-				Name: "face_vector",
+				Name: "zk_facemap",
 				Type: "string",
 			},
 		}
@@ -315,18 +324,22 @@ func generateAttributesTypes(specs string) []apitypes.Type {
 	case LIVENESS:
 		return []apitypes.Type{
 			{
-				Name: "face_vector",
+				Name: "zk_facemap",
 				Type: "bool",
 			},
 			{
 				Name: "audit_trail",
 				Type: "bool",
 			},
+			{
+				Name: "face",
+				Type: "bool",
+			},
 		}
 	case FACE:
 		return []apitypes.Type{
 			{
-				Name: "face_vector",
+				Name: "zk_facemap",
 				Type: "bool",
 			},
 		}
@@ -420,9 +433,15 @@ func generateTypes(specs string) apitypes.Types {
 
 func main() {
 	loadEnv()
-	PRIVATE_OWNER_SIGNING_KEY := getEnv("PRIVATE_OWNER_SIGNING_KEY")
-	PUBLIC_OWNER_ADDRESS := getEnv("PUBLIC_OWNER_ADDRESS")
-	PUBLIC_OWNER_ENCRYPTION_KEY := getEnv("PUBLIC_OWNER_ENCRYPTION_KEY")
+	//PRIVATE_OWNER_SIGNING_KEY := getEnv("PRIVATE_OWNER_SIGNING_KEY")
+	//PUBLIC_OWNER_ADDRESS := getEnv("PUBLIC_OWNER_ADDRESS")
+	//PUBLIC_OWNER_ENCRYPTION_KEY := getEnv("PUBLIC_OWNER_ENCRYPTION_KEY")
+
+	publicKey, privateKey, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		return
+	}
+	encodedPubKey, _ := bech32.Encode(elrond.ElrondHrp, publicKey)
 
 	specsPtr := flag.String("specs", documentSpecsName[rand.Intn(len(documentSpecsName))], "specs type to generate")
 	validPtr := flag.Bool("valid", true, "is signature valid or not")
@@ -445,11 +464,10 @@ func main() {
 			Fields:      generateFields(*specsPtr),
 			Attributes:  generateAttributes(*specsPtr),
 			Owner: models.AnimaOwner{
-				ID:                  fmt.Sprintf("anima:owner:%s", PUBLIC_OWNER_ADDRESS),
-				PublicAddress:       PUBLIC_OWNER_ADDRESS,
-				Chain:               "ETH",
-				Wallet:              "METAMASK",
-				PublicKeyEncryption: PUBLIC_OWNER_ENCRYPTION_KEY,
+				ID:            fmt.Sprintf("anima:owner:%s", encodedPubKey),
+				PublicAddress: encodedPubKey,
+				Chain:         "ETH",
+				Wallet:        "METAMASK",
 			},
 			Issuer: models.AnimaIssuer{
 				ID:            "anima:issuer:synaps@1.0.0",
@@ -466,9 +484,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	challengeHash, err := evm.GetEIP712Message(challenge)
+	challengeHash, err := evm.GetERD712Message(challenge)
 
 	fmt.Printf("%v\n", err)
+
 	privateKey, _ := crypto.HexToECDSA(PRIVATE_OWNER_SIGNING_KEY)
 	signature, err := crypto.Sign(challengeHash, privateKey)
 	if err != nil {
