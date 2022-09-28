@@ -40,7 +40,11 @@ func VerifySignature(publicAddress string, data []byte, userSignature string) (b
 		return false, fmt.Errorf("invalid hrp from public addres: %s", hrp)
 	}
 
-	valid := ed25519.Verify(decodedBech32Addr, message, sigBytes)
+	converted, err := bech32.ConvertBits(decodedBech32Addr, 5, 8, false)
+	if err != nil {
+		return false, err
+	}
+	valid := ed25519.Verify(converted, message, sigBytes)
 	if !valid {
 		return false, fmt.Errorf("unable to verify signature")
 	}
