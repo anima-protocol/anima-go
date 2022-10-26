@@ -114,7 +114,6 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 				Id:    proofId,
 			},
 			Authorization: &protocol.IssAttributeCredentialContentAuthorization{
-				Specs:     request.Document.Authorization.Specs,
 				Content:   request.Document.Authorization.Content,
 				Signature: request.Document.Authorization.Signature,
 			},

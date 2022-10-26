@@ -8,36 +8,19 @@ import (
 )
 
 // Issue - Issue new credential to Anima Protocol
-func Issue(anima *models.Protocol, issuer *protocol.AnimaIssuer, requestDocument *protocol.IssueDocumentRequest, requestLiveness *protocol.IssueDocumentRequest) error {
+func Issue(anima *models.Protocol, issuer *protocol.AnimaIssuer, requestDocument *protocol.IssueDocumentRequest) (*protocol.IssueDocumentResponse, error) {
 	if err := validators.ValidateProtocol(anima); err != nil {
-		return err
+		return nil, err
 	}
 
-	liveness, err := core.SignIssuing(anima, issuer, requestLiveness, anima.SigningFunc)
+	document, err := core.SignIssuing(anima, issuer, requestDocument, anima.SigningFunc)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	issueRequest := &protocol.IssueRequest{
-		Liveness: liveness,
-		Document: nil,
-	}
+	response, err := protocol.Issue(anima, document)
 
-	if requestDocument != nil {
-		err = core.AddLivenessToIssuingDocument(liveness, requestDocument)
-		if err != nil {
-			return err
-		}
-
-		document, err := core.SignIssuing(anima, issuer, requestDocument, anima.SigningFunc)
-		if err != nil {
-			return err
-		}
-
-		issueRequest.Document = document
-	}
-
-	return protocol.Issue(anima, issueRequest)
+	return response, nil
 }
 
 // Verify - Verify Sharing Request from Anima Protocol

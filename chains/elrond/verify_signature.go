@@ -1,9 +1,10 @@
-package evm
+package elrond
 
 import (
 	"crypto/ed25519"
 	"encoding/hex"
 	"fmt"
+
 	"github.com/btcsuite/btcutil/bech32"
 )
 
