@@ -1,4 +1,4 @@
-package evm
+package elrond
 
 import (
 	"encoding/json"
@@ -12,6 +12,8 @@ type IssuingAuthorizationERD712 struct {
 	Message models.IssuingAuthorization `json:"message"`
 	Types   apitypes.Types              `json:"types"`
 }
+
+var ELROND_CHAIN_NAME = "ELROND"
 
 func GetIssuingAuthorizationERD712(challenge []byte, signature string) (*models.IssuingAuthorization, error) {
 	authorization := IssuingAuthorizationERD712{}
