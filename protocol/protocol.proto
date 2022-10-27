@@ -29,7 +29,7 @@ message IssDocument {
     map<string, IssDocumentAttribute> attributes = 4;
     AnimaOwner owner = 5;
     IssAuthorization authorization = 6;
-    IssLiveness liveness = 7;
+    map<string, string> requirements = 7;
 }
 
 message IssAuthorization {
