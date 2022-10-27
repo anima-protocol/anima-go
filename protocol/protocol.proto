@@ -33,8 +33,8 @@ message IssDocument {
 }
 
 message IssAuthorization {
-    string content = 2;
-    string signature = 3;
+    string content = 1;
+    string signature = 2;
 }
 
 message IssDocumentAttribute {
@@ -91,8 +91,8 @@ message IssAttributeCredentialContentProof {
 }
 
 message IssAttributeCredentialContentAuthorization {
-    string content = 2;
-    string signature = 3;
+    string content = 1;
+    string signature = 2;
 }
 
 message IssAttributeCredentialContentAttribute {
