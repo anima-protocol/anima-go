@@ -48,7 +48,6 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 		Id:            issuingAuthorization.Owner.ID,
 		PublicAddress: issuingAuthorization.Owner.PublicAddress,
 		Chain:         issuingAuthorization.Owner.Chain,
-		Wallet:        issuingAuthorization.Owner.Wallet,
 	}
 
 	request.Document.Owner = owner
@@ -104,7 +103,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 			Owner:     owner,
 			Issuer:    issuer,
 			Attribute: &protocol.IssAttributeCredentialContentAttribute{
-				Specs: "anima:specs:attribute@1.0.0",
+				Specs: "anima:schema:attribute@1.0.0",
 				Id:    fmt.Sprintf("anima:attribute:%s", crypto.Hash(attrContentBytes.Bytes())),
 				Hash:  contentHash,
 				Name:  name,
@@ -125,7 +124,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 		}
 
 		request.Document.Attributes[name].Credential = &protocol.IssDocumentAttributeCredential{
-			Specs: "anima:specs:credential@1.0.0",
+			Specs: "anima:schema:credential@1.0.0",
 			Id:    fmt.Sprintf("anima:credential:%s", crypto.Hash(attrContentBytes.Bytes())),
 		}
 	}
