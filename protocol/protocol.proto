@@ -179,7 +179,6 @@ message AnimaOwner {
     string id = 1;
     string public_address = 2;
     string chain = 3;
-    string wallet = 4;
 }
 
 message AnimaProtocol {
