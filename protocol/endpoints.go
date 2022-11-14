@@ -10,29 +10,31 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-func Issue(anima *models.Protocol, req *IssueRequest) error {
+func Issue(anima *models.Protocol, req *IssueDocumentRequest) (*IssueDocumentResponse, error) {
 	config := &Config{Secure: anima.Secure}
 	err := Init(config, anima)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if !utils.InArray(anima.Chain, []string{"ETH"}) {
-		return errors.New("unsupported chain")
+		return nil, errors.New("unsupported chain")
 	}
 
 	signature, err := evm.SignProtocolRequest(anima, req, anima.SigningFunc)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	header := metadata.New(map[string]string{"signature": signature, "chain": anima.Chain})
 	ctx := metadata.NewOutgoingContext(context.Background(), header)
 
-	if _, err = client.Issue(ctx, req); err != nil {
-		return err
+	response, err := client.Issue(ctx, req)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil
+	return response, nil
 }
 
 func Verify(anima *models.Protocol, req *VerifyRequest) (*VerifyResponse, error) {

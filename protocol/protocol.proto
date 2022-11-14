@@ -11,9 +11,10 @@ message IssueDocumentRequest {
     IssProof proof = 3;
 }
 
-message IssueRequest {
-    IssueDocumentRequest liveness = 1;
-    IssueDocumentRequest document = 2;
+message IssueDocumentResponse {
+    string id = 1;
+    string specs = 2;
+    map<string, string> attributes = 3;
 }
 
 message IssLiveness {
@@ -28,13 +29,12 @@ message IssDocument {
     map<string, IssDocumentAttribute> attributes = 4;
     AnimaOwner owner = 5;
     IssAuthorization authorization = 6;
-    IssLiveness liveness = 7;
+    map<string, string> requirements = 7;
 }
 
 message IssAuthorization {
-    string specs = 1;
-    string content = 2;
-    string signature = 3;
+    string content = 1;
+    string signature = 2;
 }
 
 message IssDocumentAttribute {
@@ -91,9 +91,8 @@ message IssAttributeCredentialContentProof {
 }
 
 message IssAttributeCredentialContentAuthorization {
-    string specs = 1;
-    string content = 2;
-    string signature = 3;
+    string content = 1;
+    string signature = 2;
 }
 
 message IssAttributeCredentialContentAttribute {
@@ -160,7 +159,6 @@ message AnimaCredentialAttribute {
 }
 
 message SharingAuthorization {
-    string specs = 1;
     string content = 2;
     string signature = 3;
 }
@@ -181,7 +179,6 @@ message AnimaOwner {
     string id = 1;
     string public_address = 2;
     string chain = 3;
-    string wallet = 4;
 }
 
 message AnimaProtocol {
@@ -258,8 +255,7 @@ message RequestActionResponse {
 
 service Anima {
     rpc Status(StatusRequest) returns (StatusResponse) {};
-    rpc Issue(IssueRequest) returns (Empty) {};
-    rpc CreateAnima(IssueDocumentRequest) returns (Empty) {};
+    rpc Issue(IssueDocumentRequest) returns (IssueDocumentResponse) {};
     rpc Verify(VerifyRequest) returns (VerifyResponse) {};
     rpc RegisterVerifier(RegisterVerifierRequest) returns (RegisterVerifierResponse) {};
     rpc RequestAction(RequestActionRequest) returns (RequestActionResponse) {};
