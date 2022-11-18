@@ -3,8 +3,10 @@ package protocol
 import (
 	"crypto/tls"
 	"fmt"
-	"google.golang.org/grpc/keepalive"
 	"time"
+
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/keepalive"
 
 	"github.com/anima-protocol/anima-go/models"
 	"google.golang.org/grpc"
@@ -27,21 +29,21 @@ func Init(config *Config, protocol *models.Protocol) error {
 
 		opts := []grpc.DialOption{
 			grpc.WithKeepaliveParams(keepalive.ClientParameters{
-				Time:                5 * time.Minute,
-				Timeout:             20 * time.Second,
+				Time:                3 * time.Second,
+				Timeout:             10 * time.Second,
 				PermitWithoutStream: true,
 			}),
+			grpc.FailOnNonTempDialError(true),
 		}
 
 		if config.Secure {
 			opts = append(opts, grpc.WithTransportCredentials(creds))
-			opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(100000000)))
-			opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallSendMsgSize(100000000)))
 		} else {
-			opts = append(opts, grpc.WithInsecure())
-			opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(100000000)))
-			opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallSendMsgSize(100000000)))
+			opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		}
+
+		opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(100000000)))
+		opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallSendMsgSize(100000000)))
 
 		fmt.Printf("-> network: %v\n", protocol.Network)
 		cc, err := grpc.Dial(protocol.Network, opts...)
