@@ -18,9 +18,7 @@ func Issue(anima *models.Protocol, issuer *protocol.AnimaIssuer, requestDocument
 		return nil, err
 	}
 
-	response, err := protocol.Issue(anima, document)
-
-	return response, nil
+	return protocol.Issue(anima, document)
 }
 
 // Verify - Verify Sharing Request from Anima Protocol
