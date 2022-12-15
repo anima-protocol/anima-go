@@ -3,6 +3,7 @@ syntax = "proto3";
 package anima;
 option go_package="protocol/;protocol";
 
+
 message Empty {}
 
 message IssueDocumentRequest {
@@ -207,25 +208,26 @@ message RegisterVerifierResponse {
 }
 
 message GrantTrusteeRequest {
-    string specs = 1;
     string content = 2;
     string signature = 3;
 }
 
 message RevokeTrusteeRequest {
-    string specs = 1;
     string content = 2;
     string signature = 3;
 }
 
 message ListTrusteesRequest {
-    string specs = 1;
     string content = 2;
     string signature = 3;
 }
 
 message DeleteAnimaRequest {
-    string specs = 1;
+    string content = 2;
+    string signature = 3;
+}
+
+message DeleteSingleDocumentRequest {
     string content = 2;
     string signature = 3;
 }
@@ -263,4 +265,5 @@ service Anima {
     rpc RevokeTrustee(RevokeTrusteeRequest) returns (Empty) {};
     rpc ListTrustees(ListTrusteesRequest) returns (ListTrusteesResponse) {};
     rpc DeleteAnima(DeleteAnimaRequest) returns (Empty) {};
+    rpc DeleteSingleDocument(DeleteSingleDocumentRequest) returns (Empty) {};
 }

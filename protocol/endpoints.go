@@ -165,3 +165,18 @@ func DeleteAnima(anima *models.Protocol, req *DeleteAnimaRequest) (*Empty, error
 
 	return res, nil
 }
+
+func DeleteSingleDocument(anima *models.Protocol, req *DeleteSingleDocumentRequest) (*Empty, error) {
+	config := &Config{Secure: anima.Secure}
+	err := Init(config, anima)
+	if err != nil {
+		return &Empty{}, err
+	}
+
+	res, err := client.DeleteSingleDocument(context.Background(), req)
+	if err != nil {
+		return &Empty{}, err
+	}
+
+	return res, nil
+}

@@ -31,6 +31,7 @@ type AnimaClient interface {
 	RevokeTrustee(ctx context.Context, in *RevokeTrusteeRequest, opts ...grpc.CallOption) (*Empty, error)
 	ListTrustees(ctx context.Context, in *ListTrusteesRequest, opts ...grpc.CallOption) (*ListTrusteesResponse, error)
 	DeleteAnima(ctx context.Context, in *DeleteAnimaRequest, opts ...grpc.CallOption) (*Empty, error)
+	DeleteSingleDocument(ctx context.Context, in *DeleteSingleDocumentRequest, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type animaClient struct {
@@ -122,6 +123,15 @@ func (c *animaClient) DeleteAnima(ctx context.Context, in *DeleteAnimaRequest, o
 	return out, nil
 }
 
+func (c *animaClient) DeleteSingleDocument(ctx context.Context, in *DeleteSingleDocumentRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/anima.Anima/DeleteSingleDocument", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AnimaServer is the server API for Anima service.
 // All implementations must embed UnimplementedAnimaServer
 // for forward compatibility
@@ -135,6 +145,7 @@ type AnimaServer interface {
 	RevokeTrustee(context.Context, *RevokeTrusteeRequest) (*Empty, error)
 	ListTrustees(context.Context, *ListTrusteesRequest) (*ListTrusteesResponse, error)
 	DeleteAnima(context.Context, *DeleteAnimaRequest) (*Empty, error)
+	DeleteSingleDocument(context.Context, *DeleteSingleDocumentRequest) (*Empty, error)
 	mustEmbedUnimplementedAnimaServer()
 }
 
@@ -168,6 +179,9 @@ func (UnimplementedAnimaServer) ListTrustees(context.Context, *ListTrusteesReque
 }
 func (UnimplementedAnimaServer) DeleteAnima(context.Context, *DeleteAnimaRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAnima not implemented")
+}
+func (UnimplementedAnimaServer) DeleteSingleDocument(context.Context, *DeleteSingleDocumentRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSingleDocument not implemented")
 }
 func (UnimplementedAnimaServer) mustEmbedUnimplementedAnimaServer() {}
 
@@ -344,6 +358,24 @@ func _Anima_DeleteAnima_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Anima_DeleteSingleDocument_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSingleDocumentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimaServer).DeleteSingleDocument(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anima.Anima/DeleteSingleDocument",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimaServer).DeleteSingleDocument(ctx, req.(*DeleteSingleDocumentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Anima_ServiceDesc is the grpc.ServiceDesc for Anima service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -386,6 +418,10 @@ var Anima_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAnima",
 			Handler:    _Anima_DeleteAnima_Handler,
+		},
+		{
+			MethodName: "DeleteSingleDocument",
+			Handler:    _Anima_DeleteSingleDocument_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
