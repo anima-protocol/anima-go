@@ -10,6 +10,12 @@ message IssueDocumentRequest {
     IssDocument document = 1;
     map<string, IssAttribute> attributes = 2;
     IssProof proof = 3;
+    OwnerIndexCreation ownerIndexCreation = 4;
+}
+
+message OwnerIndexCreation {
+    string encryptionKey = 1;
+    string nonce = 2;
 }
 
 message IssueDocumentResponse {

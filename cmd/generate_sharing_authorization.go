@@ -5,6 +5,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log"
+	"os"
+	"time"
+
 	"github.com/anima-protocol/anima-go/chains/evm"
 	animaCrypto "github.com/anima-protocol/anima-go/crypto"
 	"github.com/anima-protocol/anima-go/models"
@@ -12,9 +16,6 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"github.com/joho/godotenv"
-	"log"
-	"os"
-	"time"
 )
 
 type IssuingAuthorization2 struct {
@@ -101,10 +102,6 @@ func main() {
 					Name: "chain",
 					Type: "string",
 				},
-				{
-					Name: "wallet",
-					Type: "string",
-				},
 			},
 			"Verifier": []apitypes.Type{
 				{
@@ -132,7 +129,7 @@ func main() {
 			},
 		},
 		Message: apitypes.TypedDataMessage{
-			"specs":     "anima:specs:sharing/authorization@1.0.0",
+			"specs":     "anima:schema:sharing/authorization@1.0.0",
 			"shared_at": uint64(time.Now().Unix()),
 			"attributes": apitypes.TypedDataMessage{
 				"document_front": "anima:credential:7aeaffeb4913b428fa357f55d54d70b7bf0678a7282227193181b5d8065de5f3",
@@ -142,7 +139,6 @@ func main() {
 				"id":             "anima:owner:0x017f912f75c4140699606Ddb8418Ec944AAbCEBA",
 				"public_address": "0x017f912f75c4140699606Ddb8418Ec944AAbCEBA",
 				"chain":          "ETH",
-				"wallet":         "METAMASK",
 			},
 			"verifier": apitypes.TypedDataMessage{
 				"id":             "anima:verifier:syn_slash_bank@1.0.0",
@@ -171,7 +167,7 @@ func main() {
 	base64Challenge := base64.StdEncoding.EncodeToString(challenge)
 
 	result := IssuingAuthorization2{
-		Specs:     "anima:specs:sharing/authorization/eip712@1.0.0",
+		Specs:     "anima:schema:sharing/authorization/eip712@1.0.0",
 		Content:   base64Challenge,
 		Signature: hexSignature,
 	}

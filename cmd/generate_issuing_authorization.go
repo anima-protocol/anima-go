@@ -1,41 +1,38 @@
 package main
 
 import (
-	"crypto/ed25519"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
-	elrond "github.com/anima-protocol/anima-go/chains/elrond"
-	"github.com/anima-protocol/anima-go/chains/evm"
-	crypto2 "github.com/anima-protocol/anima-go/crypto"
-	"github.com/anima-protocol/anima-go/models"
-	"github.com/anima-protocol/anima-go/utils"
-	"github.com/btcsuite/btcutil/bech32"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/signer/core/apitypes"
-	"github.com/joho/godotenv"
 	"log"
 	"math/rand"
 	"os"
 	"time"
+
+	"github.com/anima-protocol/anima-go/chains/evm"
+	crypto2 "github.com/anima-protocol/anima-go/crypto"
+	"github.com/anima-protocol/anima-go/models"
+	"github.com/anima-protocol/anima-go/utils"
+	"github.com/ethereum/go-ethereum/common/math"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/signer/core/apitypes"
+	"github.com/joho/godotenv"
 )
 
 type IssuingAuthorization struct {
-	Specs     string `json:"specs"`
 	Content   string `json:"content"`
 	Signature string `json:"signature"`
 }
 
 const (
-	PASSORT         string = "anima:specs:document/passport@1.0.0"
-	ID                     = "anima:specs:document/national_id@1.0.0"
-	DRIVER_LICENSE         = "anima:specs:document/driver_license@1.0.0"
-	RESIDENT_PERMIT        = "anima:specs:document/resident_permit@1.0.0"
-	LIVENESS               = "anima:specs:document/liveness@1.0.0"
-	FACE                   = "anima:specs:face@1.0.0"
+	PASSORT         string = "anima:schema:document/passport@1.0.0"
+	ID                     = "anima:schema:document/national_id@1.0.0"
+	DRIVER_LICENSE         = "anima:schema:document/driver_license@1.0.0"
+	RESIDENT_PERMIT        = "anima:schema:document/resident_permit@1.0.0"
+	LIVENESS               = "anima:schema:document/liveness@1.0.0"
+	FACE                   = "anima:schema:pop@1.0.0"
 )
 
 var documentSpecsName = []string{
@@ -76,13 +73,13 @@ func generateFields(specs string) map[string]interface{} {
 		}
 	case LIVENESS:
 		return map[string]interface{}{
-			"zk_facemap":  "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
+			"facegraph":   "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
 			"audit_trail": crypto2.HashStr("audit_trail"),
 			"face":        crypto2.HashStr("face"),
 		}
 	case FACE:
 		return map[string]interface{}{
-			"zk_facemap": "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
+			"facegraph": "17f71ed4d556a3ba04707ed8f727159739e367b45589e48fcd8ea2756a1ed4b1",
 		}
 	}
 
@@ -132,13 +129,13 @@ func generateAttributes(specs string) map[string]bool {
 		}
 	case LIVENESS:
 		return map[string]bool{
-			"zk_facemap":  true,
+			"facegraph":   true,
 			"audit_trail": true,
 			"face":        true,
 		}
 	case FACE:
 		return map[string]bool{
-			"zk_facemap": true,
+			"facegraph": true,
 		}
 	}
 	return map[string]bool{}
@@ -167,7 +164,7 @@ func generateFieldsTypes(specs string) []apitypes.Type {
 	case LIVENESS:
 		return []apitypes.Type{
 			{
-				Name: "zk_facemap",
+				Name: "facegraph",
 				Type: "string",
 			},
 			{
@@ -182,7 +179,7 @@ func generateFieldsTypes(specs string) []apitypes.Type {
 	case FACE:
 		return []apitypes.Type{
 			{
-				Name: "zk_facemap",
+				Name: "facegraph",
 				Type: "string",
 			},
 		}
@@ -324,7 +321,7 @@ func generateAttributesTypes(specs string) []apitypes.Type {
 	case LIVENESS:
 		return []apitypes.Type{
 			{
-				Name: "zk_facemap",
+				Name: "facegraph",
 				Type: "bool",
 			},
 			{
@@ -339,7 +336,7 @@ func generateAttributesTypes(specs string) []apitypes.Type {
 	case FACE:
 		return []apitypes.Type{
 			{
-				Name: "zk_facemap",
+				Name: "facegraph",
 				Type: "bool",
 			},
 		}
@@ -387,15 +384,11 @@ func generateTypes(specs string) apitypes.Types {
 				Type: "address",
 			},
 			{
-				Name: "chain",
-				Type: "string",
-			},
-			{
-				Name: "wallet",
-				Type: "string",
-			},
-			{
 				Name: "public_key_encryption",
+				Type: "string",
+			},
+			{
+				Name: "chain",
 				Type: "string",
 			},
 		},
@@ -433,15 +426,9 @@ func generateTypes(specs string) apitypes.Types {
 
 func main() {
 	loadEnv()
-	//PRIVATE_OWNER_SIGNING_KEY := getEnv("PRIVATE_OWNER_SIGNING_KEY")
-	//PUBLIC_OWNER_ADDRESS := getEnv("PUBLIC_OWNER_ADDRESS")
-	//PUBLIC_OWNER_ENCRYPTION_KEY := getEnv("PUBLIC_OWNER_ENCRYPTION_KEY")
-
-	publicKey, privateKey, err := ed25519.GenerateKey(nil)
-	if err != nil {
-		return
-	}
-	encodedPubKey, _ := bech32.Encode(elrond.ElrondHrp, publicKey)
+	PRIVATE_OWNER_SIGNING_KEY := getEnv("PRIVATE_OWNER_SIGNING_KEY")
+	PUBLIC_OWNER_ADDRESS := getEnv("PUBLIC_OWNER_ADDRESS")
+	PUBLIC_OWNER_ENCRYPTION_KEY := getEnv("PUBLIC_OWNER_ENCRYPTION_KEY")
 
 	specsPtr := flag.String("specs", documentSpecsName[rand.Intn(len(documentSpecsName))], "specs type to generate")
 	validPtr := flag.Bool("valid", true, "is signature valid or not")
@@ -464,10 +451,10 @@ func main() {
 			Fields:      generateFields(*specsPtr),
 			Attributes:  generateAttributes(*specsPtr),
 			Owner: models.AnimaOwner{
-				ID:            fmt.Sprintf("anima:owner:%s", encodedPubKey),
-				PublicAddress: encodedPubKey,
-				Chain:         "ETH",
-				Wallet:        "METAMASK",
+				ID:                  fmt.Sprintf("anima:owner:%s", PUBLIC_OWNER_ADDRESS),
+				PublicAddress:       PUBLIC_OWNER_ADDRESS,
+				PublicKeyEncryption: PUBLIC_OWNER_ENCRYPTION_KEY,
+				Chain:               "EVM",
 			},
 			Issuer: models.AnimaIssuer{
 				ID:            "anima:issuer:synaps@1.0.0",
@@ -484,7 +471,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	challengeHash, err := evm.GetERD712Message(challenge)
+	challengeHash, err := evm.GetEIP712Message(challenge)
 
 	fmt.Printf("%v\n", err)
 
@@ -504,7 +491,6 @@ func main() {
 	base64Challenge := base64.StdEncoding.EncodeToString(challenge)
 
 	result := IssuingAuthorization{
-		Specs:     "anima:specs:issuing/authorization/eip712@1.0.0",
 		Content:   base64Challenge,
 		Signature: hexSignature,
 	}
