@@ -19,6 +19,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 	if err != nil {
 		return nil, err
 	}
+	
 
 	// Sign Proof
 	proofContent, err := base64.StdEncoding.DecodeString(request.Proof.Content)
