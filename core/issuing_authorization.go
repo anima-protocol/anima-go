@@ -9,24 +9,17 @@ import (
 	"github.com/anima-protocol/anima-go/chains/evm"
 	"github.com/anima-protocol/anima-go/models"
 	"github.com/anima-protocol/anima-go/protocol"
-	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 )
 
-func GetChainSignatureFuncIssuing(authorization *IssuingAuthorization) func([]byte, string) (*models.IssuingAuthorization, error) {
-	switch authorization.Message.Owner.Chain {
+func GetChainSignatureFuncIssuing(authorization *models.IssuingAuthorization) func(string, []byte, string) error {
+	switch authorization.Owner.Chain {
 	case chains.EVM:
-		return evm.GetIssuingAuthorizationEIP712
+		return evm.VerifyPersonalSignature
 	case chains.ELROND:
-		return elrond.GetIssuingAuthorizationERD712
+		return elrond.VerifyPersonalSignature
 	}
 
-	return evm.GetIssuingAuthorizationEIP712
-}
-
-type IssuingAuthorization struct {
-	Domain  apitypes.TypedDataDomain    `json:"domain"`
-	Message models.IssuingAuthorization `json:"message"`
-	Types   apitypes.Types              `json:"types"`
+	return evm.VerifyPersonalSignature
 }
 
 func GetIssuingAuthorization(document *protocol.IssDocument) (*models.IssuingAuthorization, error) {
@@ -38,15 +31,15 @@ func GetIssuingAuthorization(document *protocol.IssDocument) (*models.IssuingAut
 		return nil, err
 	}
 
-	authorization := IssuingAuthorization{}
+	authorization := models.IssuingAuthorization{}
 	if err := json.Unmarshal(content, &authorization); err != nil {
 		return nil, err
 	}
 
-	issuingAuthorization, rErr := GetChainSignatureFuncIssuing(&authorization)(content, signature)
-	if rErr != nil {
-		return nil, rErr
+	err = GetChainSignatureFuncIssuing(&authorization)(authorization.Owner.PublicAddress, content, signature)
+	if err != nil {
+		return nil, err
 	}
 
-	return issuingAuthorization, nil
+	return &authorization, nil
 }

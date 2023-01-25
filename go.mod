@@ -10,7 +10,7 @@ require (
 	google.golang.org/protobuf v1.27.1
 )
 
-require (
+require ( 
 	github.com/btcsuite/btcd v0.20.1-beta // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
