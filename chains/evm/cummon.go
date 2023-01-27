@@ -2,7 +2,6 @@ package evm
 
 import (
 	"bytes"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"strings"
