@@ -30,7 +30,6 @@ func SignBytes(data []byte, signingFunc func([]byte) (string, error)) (string, e
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("new signature: %v\ncontent: %v\noriginal_data: %v\n", signature, hex.EncodeToString(hashedMessage.Bytes()), string(data))
 
 	return signature, nil
 }
@@ -53,7 +52,6 @@ func SignInterfaceData(data interface{}, signingFunc func([]byte) (string, error
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("new signature: %v\ncontent: %v\noriginal_data: %v\n", signature, hex.EncodeToString(hashedMessage.Bytes()), string(dataByte))
 
 	return signature, nil
 }
