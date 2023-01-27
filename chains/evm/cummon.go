@@ -2,6 +2,7 @@ package evm
 
 import (
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -40,6 +41,7 @@ func SignData(data interface{}, signingFunc func([]byte) (string, error)) (strin
 	if err != nil {
 		return "", err
 	}
+	fmt.Printf("new signature: %v\ncontent: %v\n", signature, hex.EncodeToString(hashedMessage.Bytes()))
 
 	return signature, nil
 }
