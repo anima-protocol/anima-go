@@ -21,7 +21,7 @@ func Issue(anima *models.Protocol, req *IssueDocumentRequest) (*IssueDocumentRes
 		return nil, errors.New("unsupported chain")
 	}
 
-	signature, err := evm.SignData(req, anima.SigningFunc)
+	signature, err := evm.SignInterfaceData(req, anima.SigningFunc)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func Verify(anima *models.Protocol, req *VerifyRequest) (*VerifyResponse, error)
 		return &VerifyResponse{}, errors.New("unsupported chain")
 	}
 
-	signature, err := evm.SignData(req, anima.SigningFunc)
+	signature, err := evm.SignInterfaceData(req, anima.SigningFunc)
 	if err != nil {
 		return &VerifyResponse{}, err
 	}
@@ -75,7 +75,7 @@ func RegisterVerifier(anima *models.Protocol, req *RegisterVerifierRequest) (*Re
 		return &RegisterVerifierResponse{}, errors.New("unsupported chain")
 	}
 
-	signature, err := evm.SignData(req, anima.SigningFunc)
+	signature, err := evm.SignInterfaceData(req, anima.SigningFunc)
 	if err != nil {
 		return &RegisterVerifierResponse{}, err
 	}

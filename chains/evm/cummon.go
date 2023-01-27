@@ -23,7 +23,19 @@ func VerifySignature(content []byte, sig string, issuerPublicAddress string) err
 	return verifyEVMSignatureBase(issuerPublicAddress, hashedMessage.Bytes(), sig)
 }
 
-func SignData(data interface{}, signingFunc func([]byte) (string, error)) (string, error) {
+func SignBytes(data []byte, signingFunc func([]byte) (string, error)) (string, error) {
+	hashedMessage := ethCrypto.Keccak256Hash(data)
+
+	signature, err := signingFunc(hashedMessage.Bytes())
+	if err != nil {
+		return "", err
+	}
+	fmt.Printf("new signature: %v\ncontent: %v\noriginal_data: %v\n", signature, hex.EncodeToString(hashedMessage.Bytes()), string(data))
+
+	return signature, nil
+}
+
+func SignInterfaceData(data interface{}, signingFunc func([]byte) (string, error)) (string, error) {
 	dataByte, err := json.Marshal(&data)
 	if err != nil {
 		return "", err
