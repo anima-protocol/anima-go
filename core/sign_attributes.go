@@ -38,7 +38,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 
 	switch anima.Chain {
 	case models.CHAIN_ETH:
-		proofSignature, err := evm.SignProof(anima, proofContent, signingFunc)
+		proofSignature, err := evm.SignBytes(proofContentBytes.Bytes(), signingFunc)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +152,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 
 		switch anima.Chain {
 		case models.CHAIN_ETH:
-			signature, err := evm.SignCredential(anima, request.Attributes[name].Credential.Content, signingFunc)
+			signature, err := evm.SignInterfaceData(request.Attributes[name].Credential.Content, signingFunc)
 			if err != nil {
 				return nil, err
 			}
