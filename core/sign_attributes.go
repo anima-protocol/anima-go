@@ -20,6 +20,10 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 		return nil, err
 	}
 
+	if issuingAuthorization.PublicKeyEncryption != "" {
+		request.Document.EncryptionKey = issuingAuthorization.PublicKeyEncryption
+	}
+
 	// Sign Proof
 	proofContent, err := base64.StdEncoding.DecodeString(request.Proof.Content)
 	if err != nil {
