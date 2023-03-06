@@ -9,12 +9,6 @@ message IssueDocumentRequest {
     IssDocument document = 1;
     map<string, IssAttribute> attributes = 2;
     IssProof proof = 3;
-    OwnerIndexCreation ownerIndexCreation = 4;
-}
-
-message OwnerIndexCreation {
-    string encryption_key = 1;
-    string nonce = 2;
 }
 
 message IssueDocumentResponse {
@@ -261,8 +255,14 @@ message RequestActionResponse {
     string nonce = 1;
 }
 
+message AnimaOwnerCreationRequest {
+    string creation_challenge = 1;
+    string creation_challenge_signature = 2;
+}
+
 service Anima {
     rpc Status(StatusRequest) returns (StatusResponse) {};
+    rpc CreateAnima(AnimaOwnerCreationRequest) returns (Empty) {};
     rpc Issue(IssueDocumentRequest) returns (IssueDocumentResponse) {};
     rpc Verify(VerifyRequest) returns (VerifyResponse) {};
     rpc RegisterVerifier(RegisterVerifierRequest) returns (RegisterVerifierResponse) {};
