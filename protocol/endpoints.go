@@ -180,3 +180,18 @@ func DeleteSingleDocument(anima *models.Protocol, req *DeleteSingleDocumentReque
 
 	return res, nil
 }
+
+func CreateAnima(anima *models.Protocol, req *AnimaOwnerCreationRequest) (*Empty, error) {
+	config := &Config{Secure: anima.Secure}
+	err := Init(config, anima)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := client.CreateAnima(context.Background(), req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
