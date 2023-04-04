@@ -5,17 +5,18 @@ import (
 	"encoding/hex"
 )
 
-func Hash(content []byte) string {
+func HashSHA256Bytes(content []byte) []byte {
 	h := sha256.New()
 	h.Write(content)
 	sum := h.Sum(nil)
-	return hex.EncodeToString(sum)
+	return sum
 }
 
-func HashStr(str string) string {
+func HashSHA256(content []byte) string {
+	return hex.EncodeToString(HashSHA256Bytes(content))
+}
+
+func HashSHA256Str(str string) string {
 	content := []byte(str)
-	h := sha256.New()
-	h.Write(content)
-	sum := h.Sum(nil)
-	return hex.EncodeToString(sum)
+	return hex.EncodeToString(HashSHA256Bytes(content))
 }
