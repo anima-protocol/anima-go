@@ -178,7 +178,7 @@ func main() {
 	jsonResult, _ := json.Marshal(finalAuthorization)
 	message := make(map[string]interface{})
 
-	message["content"] = animaCrypto.Hash(jsonResult)
+	message["content"] = animaCrypto.HashSHA256(jsonResult)
 
 	sigRequest := apitypes.TypedData{
 		Domain: apitypes.TypedDataDomain{

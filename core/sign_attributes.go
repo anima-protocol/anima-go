@@ -46,7 +46,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 		request.Proof.Signature = "0x" + proofSignature
 	}
 
-	proofId := fmt.Sprintf("anima:proof:%s", crypto.Hash(proofContentBytes.Bytes()))
+	proofId := fmt.Sprintf("anima:proof:%s", crypto.HashSHA256(proofContentBytes.Bytes()))
 
 	owner := &protocol.AnimaOwner{
 		Id:            issuingAuthorization.Owner.ID,
@@ -78,7 +78,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 				contentHashes = request.Document.Attributes[name].Content.Values
 			} else {
 				for _, value := range request.Document.Attributes[name].Content.Values {
-					contentHashes = append(contentHashes, crypto.HashStr(value))
+					contentHashes = append(contentHashes, crypto.HashSHA256Str(value))
 				}
 			}
 		} else {
@@ -86,7 +86,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 			if request.Attributes[name].Content.Type == "file" {
 				contentHash = request.Document.Attributes[name].Content.Value
 			} else {
-				contentHash = crypto.HashStr(request.Document.Attributes[name].Content.Value)
+				contentHash = crypto.HashSHA256Str(request.Document.Attributes[name].Content.Value)
 			}
 		}
 
@@ -108,7 +108,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 			Issuer:    issuer,
 			Attribute: &protocol.IssAttributeCredentialContentAttribute{
 				Specs: "anima:schema:attribute@1.0.0",
-				Id:    fmt.Sprintf("anima:attribute:%s", crypto.Hash(attrContentBytes.Bytes())),
+				Id:    fmt.Sprintf("anima:attribute:%s", crypto.HashSHA256(attrContentBytes.Bytes())),
 				Hash:  contentHash,
 				Name:  name,
 			},
@@ -129,7 +129,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 
 		request.Document.Attributes[name].Credential = &protocol.IssDocumentAttributeCredential{
 			Specs: "anima:schema:credential@1.0.0",
-			Id:    fmt.Sprintf("anima:credential:%s", crypto.Hash(attrContentBytes.Bytes())),
+			Id:    fmt.Sprintf("anima:credential:%s", crypto.HashSHA256(attrContentBytes.Bytes())),
 		}
 	}
 
@@ -147,7 +147,7 @@ func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *
 
 		request.Attributes[name].Credential.Content.Document = &protocol.IssAttributeCredentialContentDocument{
 			Specs: request.Document.Specs,
-			Id:    fmt.Sprintf("anima:document:%s", crypto.Hash(documentContentBytes.Bytes())),
+			Id:    fmt.Sprintf("anima:document:%s", crypto.HashSHA256(documentContentBytes.Bytes())),
 		}
 
 		switch anima.Chain {
