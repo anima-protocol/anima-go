@@ -8,6 +8,7 @@ import (
 	cosmos "github.com/anima-protocol/anima-go/chains/cosmos/signature"
 	"github.com/anima-protocol/anima-go/chains/elrond"
 	"github.com/anima-protocol/anima-go/chains/evm"
+	starknet "github.com/anima-protocol/anima-go/chains/starknet/signature"
 	"github.com/anima-protocol/anima-go/models"
 	"github.com/anima-protocol/anima-go/protocol"
 )
@@ -19,6 +20,8 @@ func GetChainSignatureFuncIssuing(authorization *models.IssuingAuthorization) fu
 	case chains.ELROND:
 	case chains.MULTIVERSX:
 		return elrond.VerifyPersonalSignature
+	case chains.STARKNET:
+		return starknet.VerifyPersonalSignature
 	case chains.COSMOS:
 		return cosmos.VerifyPersonalSignature
 	}

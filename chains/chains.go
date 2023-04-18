@@ -6,12 +6,14 @@ const (
 	ELROND     = "ELROND"
 	MULTIVERSX = "MULTIVERSX"
 	COSMOS     = "COSMOS"
+	STARKNET   = "STARKNET"
 )
 
 var SUPPORTED = map[string]bool{
 	ETH:        true,
 	EVM:        true,
 	ELROND:     true,
-	COSMOS:     true,
 	MULTIVERSX: true,
+	COSMOS:     true,
+	STARKNET:   true,
 }
