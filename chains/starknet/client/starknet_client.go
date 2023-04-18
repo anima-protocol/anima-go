@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"github.com/dontpanicdao/caigo/gateway"
 	"github.com/dontpanicdao/caigo/types"
 	"math/big"
@@ -30,6 +31,7 @@ func (c *StarknetClient) IsValidSignature(context context.Context, address strin
 	}, "")
 
 	if err != nil {
+		fmt.Errorf("error calling isValidSignature: %v\n", err)
 		return false
 	} else if callResp[0] == "0x1" {
 		return true
