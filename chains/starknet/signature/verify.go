@@ -22,6 +22,7 @@ type Signature struct {
 }
 
 func VerifyPersonalSignature(publicAddress string, data []byte, userSignature string) error {
+	ctx := context.Background()
 	//convert userSignature hex string to bytes
 	sigHex, err := hexutil.Decode(userSignature)
 	if err != nil {
@@ -48,10 +49,21 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 
 	starknetClient := client.NewStarknetClient(sig.ChainId)
 
-	valid := starknetClient.IsValidSignature(context.Background(), publicAddress, messageHash, sig.Signature.R, sig.Signature.S)
+	valid := starknetClient.IsValidSignature(ctx, publicAddress, messageHash, sig.Signature.R, sig.Signature.S)
 
 	if !valid {
-		return fmt.Errorf("invalid signature")
+		buggedTypedDataMessage := starknetTypedData.CreateBuggedStarknetAuthorizationTypedDataMessage(data)
+
+		buggedMessageHash, err := typedData.GetMessageHash(types.HexToBN(publicAddress), buggedTypedDataMessage, caigo.Curve)
+		if err != nil {
+			return err
+		}
+
+		validBugged := starknetClient.IsValidSignature(ctx, publicAddress, buggedMessageHash, sig.Signature.R, sig.Signature.S)
+
+		if !validBugged {
+			return fmt.Errorf("invalid signature")
+		}
 	}
 
 	return nil
