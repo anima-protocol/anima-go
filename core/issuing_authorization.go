@@ -18,6 +18,7 @@ func GetChainSignatureFuncIssuing(authorization *models.IssuingAuthorization) fu
 	case chains.EVM:
 		return evm.VerifyPersonalSignature
 	case chains.ELROND:
+		return elrond.VerifyPersonalSignature
 	case chains.MULTIVERSX:
 		return elrond.VerifyPersonalSignature
 	case chains.STARKNET:
