@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"github.com/anima-protocol/anima-go/chains/starknet/client"
 	"github.com/anima-protocol/anima-go/chains/starknet/starknetTypedData"
 	"github.com/dontpanicdao/caigo"
@@ -49,8 +50,10 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 
 	starknetClient := client.NewStarknetClient(sig.ChainId)
 
-	valid := starknetClient.IsValidSignature(ctx, publicAddress, messageHash, sig.Signature.R, sig.Signature.S)
-
+	valid, err := starknetClient.IsValidSignature(ctx, publicAddress, messageHash, sig.Signature.R, sig.Signature.S)
+	if err != nil {
+		return err
+	}
 	if !valid {
 		buggedTypedDataMessage := starknetTypedData.CreateBuggedStarknetAuthorizationTypedDataMessage(data)
 
@@ -59,8 +62,11 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 			return err
 		}
 
-		validBugged := starknetClient.IsValidSignature(ctx, publicAddress, buggedMessageHash, sig.Signature.R, sig.Signature.S)
+		validBugged, err := starknetClient.IsValidSignature(ctx, publicAddress, buggedMessageHash, sig.Signature.R, sig.Signature.S)
 
+		if err != nil {
+			return err
+		}
 		if !validBugged {
 			return fmt.Errorf("invalid signature")
 		}
