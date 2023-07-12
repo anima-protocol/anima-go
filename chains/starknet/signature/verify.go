@@ -2,8 +2,10 @@ package signature
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/anima-protocol/anima-go/chains/starknet/client"
 	"github.com/anima-protocol/anima-go/chains/starknet/starknetTypedData"
@@ -46,6 +48,15 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 	messageHash, err := typedData.GetMessageHash(types.HexToBN(publicAddress), typedDataMessage, caigo.Curve)
 	if err != nil {
 		return err
+	}
+
+	if strings.HasPrefix(sig.ChainId, "0x") {
+		chainIdWithoutPrefix := sig.ChainId[2:]
+		bs, err := hex.DecodeString(chainIdWithoutPrefix)
+		if err != nil {
+			return err
+		}
+		sig.ChainId = string(bs)
 	}
 
 	starknetClient := client.NewStarknetClient(sig.ChainId)
