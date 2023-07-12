@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 	"strings"
 
@@ -36,6 +37,7 @@ func (c *StarknetClient) IsValidSignature(context context.Context, address strin
 		if strings.Contains(err.Error(), "StarknetErrorCode.UNINITIALIZED_CONTRACT") {
 			return false, errors.Error_Not_Deployed
 		}
+		fmt.Printf("MessageHash: %s\n", messageHash.String())
 		return false, nil
 	} else if callResp[0] == "0x1" {
 		return true, nil
