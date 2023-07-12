@@ -62,6 +62,9 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 	starknetClient := client.NewStarknetClient(sig.ChainId)
 
 	valid, err := starknetClient.IsValidSignature(ctx, publicAddress, messageHash, sig.Signature.R, sig.Signature.S)
+	if err != nil {
+		return err
+	}
 
 	if !valid {
 		buggedTypedDataMessage := starknetTypedData.CreateBuggedStarknetAuthorizationTypedDataMessage(data)
@@ -72,15 +75,12 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 		}
 		fmt.Printf("Bugged message hash: %s\n", buggedMessageHash)
 
-		validBugged, err := starknetClient.IsValidSignature(ctx, publicAddress, buggedMessageHash, sig.Signature.R, sig.Signature.S)
+		validBugged, _ := starknetClient.IsValidSignature(ctx, publicAddress, buggedMessageHash, sig.Signature.R, sig.Signature.S)
 
-		if err != nil {
-			return err
-		}
 		if !validBugged {
 			return fmt.Errorf("invalid signature")
 		}
 	}
 
-	return err
+	return nil
 }
