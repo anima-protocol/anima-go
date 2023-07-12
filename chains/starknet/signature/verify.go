@@ -67,11 +67,12 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 	}
 	if !valid {
 		buggedTypedDataMessage := starknetTypedData.CreateBuggedStarknetAuthorizationTypedDataMessage(data)
-
+		fmt.Printf("Bugged message: %v\n", buggedTypedDataMessage)
 		buggedMessageHash, err := typedData.GetMessageHash(types.HexToBN(publicAddress), buggedTypedDataMessage, caigo.Curve)
 		if err != nil {
 			return err
 		}
+		fmt.Printf("Bugged message hash: %s\n", buggedMessageHash)
 
 		validBugged, err := starknetClient.IsValidSignature(ctx, publicAddress, buggedMessageHash, sig.Signature.R, sig.Signature.S)
 

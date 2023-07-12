@@ -1,6 +1,7 @@
 package starknetTypedData
 
 import (
+	"fmt"
 	"github.com/anima-protocol/anima-go/crypto"
 	"github.com/dontpanicdao/caigo"
 	"github.com/dontpanicdao/caigo/types"
@@ -36,7 +37,9 @@ func (m BuggedStarknetAuthorizationMessage) FmtDefinitionEncoding(field string) 
 			fmtEnc = append(fmtEnc, types.UTF8StrToBig(m.Hash1))
 		}
 	} else if field == "hash2" {
+		fmt.Printf("hash2: %s\n", m.Hash2)
 		if digitCheck.MatchString(m.Hash2) {
+			fmt.Printf("hash2 is digit\n")
 			fmtEnc = append(fmtEnc, types.StrToBig(m.Hash2))
 		} else {
 			fmtEnc = append(fmtEnc, types.UTF8StrToBig(m.Hash2))
