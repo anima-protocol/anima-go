@@ -15,8 +15,9 @@ import (
 )
 
 type StarknetSignature struct {
-	ChainId   string    `json:"chainId"`
-	Signature Signature `json:"signature"`
+	ChainId       string    `json:"chainId"`
+	Signature     Signature `json:"signature"`
+	FullSignature []string  `json:"fullSignature"`
 }
 
 type Signature struct {
@@ -59,9 +60,17 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 		sig.ChainId = string(bs)
 	}
 
+	var finalSignature []string
+
+	if sig.FullSignature == nil || len(sig.FullSignature) == 0 {
+		finalSignature = []string{sig.Signature.R, sig.Signature.S}
+	} else {
+		finalSignature = sig.FullSignature
+	}
+
 	starknetClient := client.NewStarknetClient(sig.ChainId)
 
-	valid, err := starknetClient.IsValidSignature(ctx, publicAddress, messageHash, sig.Signature.R, sig.Signature.S)
+	valid, err := starknetClient.IsValidSignature(ctx, publicAddress, messageHash, finalSignature)
 	if err != nil {
 		return err
 	}
@@ -75,7 +84,7 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 		}
 		fmt.Printf("Bugged message hash: %s\n", buggedMessageHash)
 
-		validBugged, _ := starknetClient.IsValidSignature(ctx, publicAddress, buggedMessageHash, sig.Signature.R, sig.Signature.S)
+		validBugged, _ := starknetClient.IsValidSignature(ctx, publicAddress, buggedMessageHash, finalSignature)
 
 		if !validBugged {
 			return fmt.Errorf("invalid signature")

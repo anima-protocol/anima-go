@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math/big"
+	"strconv"
 	"strings"
 
 	"github.com/anima-protocol/anima-go/chains/starknet/errors"
@@ -21,16 +22,14 @@ func NewStarknetClient(chainId string) *StarknetClient {
 	}
 }
 
-func (c *StarknetClient) IsValidSignature(context context.Context, address string, messageHash *big.Int, r string, s string) (bool, error) {
+func (c *StarknetClient) IsValidSignature(context context.Context, address string, messageHash *big.Int, fullSignature []string) (bool, error) {
 	callResp, err := c.provider.Call(context, types.FunctionCall{
 		ContractAddress:    types.HexToHash(address),
 		EntryPointSelector: "isValidSignature",
-		Calldata: []string{
+		Calldata: append([]string{
 			messageHash.String(),
-			"2",
-			r,
-			s,
-		},
+			strconv.Itoa(len(fullSignature)),
+		}, fullSignature...),
 	}, "")
 
 	if err != nil {
