@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 
 	"github.com/anima-protocol/anima-go/chains"
-	elrond "github.com/anima-protocol/anima-go/chains/elrond"
+	cosmos "github.com/anima-protocol/anima-go/chains/cosmos/signature"
+	"github.com/anima-protocol/anima-go/chains/elrond"
 	"github.com/anima-protocol/anima-go/chains/evm"
+	starknet "github.com/anima-protocol/anima-go/chains/starknet/signature"
 	"github.com/anima-protocol/anima-go/models"
 	"github.com/anima-protocol/anima-go/protocol"
 )
@@ -17,6 +19,12 @@ func GetChainSignatureFuncIssuing(authorization *models.IssuingAuthorization) fu
 		return evm.VerifyPersonalSignature
 	case chains.ELROND:
 		return elrond.VerifyPersonalSignature
+	case chains.MULTIVERSX:
+		return elrond.VerifyPersonalSignature
+	case chains.STARKNET:
+		return starknet.VerifyPersonalSignature
+	case chains.COSMOS:
+		return cosmos.VerifyPersonalSignature
 	}
 
 	return evm.VerifyPersonalSignature
