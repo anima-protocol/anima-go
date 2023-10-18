@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	crypto "github.com/anima-protocol/anima-go/crypto"
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec/v2"
 	ethCrypto "github.com/ethereum/go-ethereum/crypto"
 	"golang.org/x/crypto/ripemd160"
 	"math/big"
@@ -32,7 +32,7 @@ func (pk *PubKeySecp256k1) GetAddress() []byte {
 
 func (pk *PubKeySecp256k1) GetEthAddress() []byte {
 	// Should be uncompressed. .
-	pubK, err := btcec.ParsePubKey(pk.pubKey, btcec.S256())
+	pubK, err := btcec.ParsePubKey(pk.pubKey)
 	if err != nil {
 		return nil
 	}
@@ -55,7 +55,7 @@ func (pk *PubKeySecp256k1) VerifyDigest32(digest, signature []byte) (bool, error
 		panic(fmt.Sprintf("Invalid length of signature: %d", len(signature)))
 	}
 
-	pubK, err := btcec.ParsePubKey(pk.pubKey, btcec.S256())
+	pubK, err := btcec.ParsePubKey(pk.pubKey)
 	if err != nil {
 		return false, fmt.Errorf("Failed to parse public key: %v", err)
 	}
