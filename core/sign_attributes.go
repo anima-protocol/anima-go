@@ -15,7 +15,7 @@ import (
 )
 
 func SignIssuing(anima *models.Protocol, issuer *protocol.AnimaIssuer, request *protocol.IssueDocumentRequest, signingFunc func([]byte) (string, error)) (*protocol.IssueDocumentRequest, error) {
-	issuingAuthorization, err := GetIssuingAuthorization(request.Document)
+	issuingAuthorization, err := GetIssuingAuthorization(request.Document, anima.StarknetRpcURL)
 	if err != nil {
 		return nil, err
 	}

@@ -21,8 +21,6 @@ func GetChainSignatureFuncIssuing(authorization *models.IssuingAuthorization) fu
 		return elrond.VerifyPersonalSignature
 	case chains.MULTIVERSX:
 		return elrond.VerifyPersonalSignature
-	case chains.STARKNET:
-		return starknet.VerifyPersonalSignature
 	case chains.COSMOS:
 		return cosmos.VerifyPersonalSignature
 	}
@@ -30,7 +28,7 @@ func GetChainSignatureFuncIssuing(authorization *models.IssuingAuthorization) fu
 	return evm.VerifyPersonalSignature
 }
 
-func GetIssuingAuthorization(document *protocol.IssDocument) (*models.IssuingAuthorization, error) {
+func GetIssuingAuthorization(document *protocol.IssDocument, starknetRpcProvider string) (*models.IssuingAuthorization, error) {
 	encodedContent := document.Authorization.Content
 	signature := document.Authorization.Signature
 
@@ -44,9 +42,13 @@ func GetIssuingAuthorization(document *protocol.IssDocument) (*models.IssuingAut
 		return nil, err
 	}
 
-	err = GetChainSignatureFuncIssuing(&authorization)(authorization.Owner.PublicAddress, content, signature)
-	if err != nil {
-		return nil, err
+	if authorization.Owner.Chain == chains.STARKNET {
+		err = starknet.VerifyPersonalSignature(authorization.Owner.PublicAddress, content, signature, starknetRpcProvider)
+	} else {
+		err = GetChainSignatureFuncIssuing(&authorization)(authorization.Owner.PublicAddress, content, signature)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &authorization, nil

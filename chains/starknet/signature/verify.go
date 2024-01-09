@@ -25,7 +25,7 @@ type Signature struct {
 	S string `json:"s"`
 }
 
-func VerifyPersonalSignature(publicAddress string, data []byte, userSignature string) error {
+func VerifyPersonalSignature(publicAddress string, data []byte, userSignature string, rpcProviderUrl string) error {
 	ctx := context.Background()
 	//convert userSignature hex string to bytes
 	sigHex, err := hexutil.Decode(userSignature)
@@ -68,7 +68,7 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 		finalSignature = sig.FullSignature
 	}
 
-	starknetClient := client.NewStarknetClient(sig.ChainId)
+	starknetClient := client.NewStarknetClient(rpcProviderUrl)
 
 	valid, err := starknetClient.IsValidSignature(ctx, publicAddress, messageHash, finalSignature)
 	if err != nil {

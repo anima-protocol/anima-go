@@ -1,10 +1,11 @@
 package models
 
 type Protocol struct {
-	Network     string                       `json:"network"`
-	Chain       string                       `json:"chain"`
-	SigningFunc func([]byte) (string, error) `json:"signing_func"`
-	Secure      bool                         `json:"secure"`
+	Network        string                       `json:"network"`
+	Chain          string                       `json:"chain"`
+	StarknetRpcURL string                       `json:"starknet_rpc_url"`
+	SigningFunc    func([]byte) (string, error) `json:"signing_func"`
+	Secure         bool                         `json:"secure"`
 }
 
 type AnimaOwner struct {
