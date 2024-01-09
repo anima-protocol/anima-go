@@ -2,43 +2,59 @@ package client
 
 import (
 	"context"
-	"fmt"
+	"github.com/NethermindEth/juno/core/felt"
+	"github.com/NethermindEth/starknet.go/rpc"
+	"github.com/NethermindEth/starknet.go/utils"
 	"math/big"
-	"strconv"
 	"strings"
 
 	"github.com/anima-protocol/anima-go/chains/starknet/errors"
-	"github.com/dontpanicdao/caigo/gateway"
-	"github.com/dontpanicdao/caigo/types"
+	ethrpc "github.com/ethereum/go-ethereum/rpc"
 )
 
 type StarknetClient struct {
-	provider *gateway.GatewayProvider
+	provider *rpc.Provider
 }
 
-func NewStarknetClient(chainId string) *StarknetClient {
+func NewStarknetClient(providerUrl string) *StarknetClient {
+	c, err := ethrpc.DialContext(context.Background(), providerUrl)
+	if err != nil {
+		panic(err)
+	}
 	return &StarknetClient{
-		provider: gateway.NewProvider(gateway.WithChain(chainId)),
+		provider: rpc.NewProvider(c),
 	}
 }
 
 func (c *StarknetClient) IsValidSignature(context context.Context, address string, messageHash *big.Int, fullSignature []string) (bool, error) {
-	callResp, err := c.provider.Call(context, types.FunctionCall{
-		ContractAddress:    types.HexToHash(address),
-		EntryPointSelector: "isValidSignature",
-		Calldata: append([]string{
-			messageHash.String(),
-			strconv.Itoa(len(fullSignature)),
-		}, fullSignature...),
-	}, "")
+	contractAddress, err := utils.HexToFelt(address)
+	if err != nil {
+		return false, err
+	}
+
+	var signatureCallData []*felt.Felt
+
+	for _, sig := range fullSignature {
+		signatureCallData = append(signatureCallData, utils.BigIntToFelt(utils.StrToBig(sig)))
+	}
+
+	tx := rpc.FunctionCall{
+		ContractAddress:    contractAddress,
+		EntryPointSelector: utils.GetSelectorFromNameFelt("isValidSignature"),
+		Calldata: append([]*felt.Felt{
+			utils.BigIntToFelt(messageHash),
+			utils.Uint64ToFelt(uint64(len(fullSignature))),
+		}, signatureCallData...),
+	}
+
+	callResp, err := c.provider.Call(context, tx, rpc.BlockID{Tag: "latest"})
 
 	if err != nil {
 		if strings.Contains(err.Error(), "StarknetErrorCode.UNINITIALIZED_CONTRACT") {
 			return false, errors.Error_Not_Deployed
 		}
-		fmt.Printf("MessageHash: %s\n", messageHash.String())
 		return false, nil
-	} else if callResp[0] == "0x1" {
+	} else if callResp[0].String() == "0x1" {
 		return true, nil
 	}
 	return false, nil

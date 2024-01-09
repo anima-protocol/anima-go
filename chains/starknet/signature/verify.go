@@ -5,12 +5,12 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"strings"
-
+	"github.com/NethermindEth/starknet.go/curve"
+	"github.com/NethermindEth/starknet.go/utils"
 	"github.com/anima-protocol/anima-go/chains/starknet/client"
 	"github.com/anima-protocol/anima-go/chains/starknet/starknetTypedData"
-	"github.com/dontpanicdao/caigo"
-	"github.com/dontpanicdao/caigo/types"
+	"strings"
+
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
@@ -46,7 +46,7 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 
 	typedDataMessage := starknetTypedData.CreateStarknetAuthorizationTypedDataMessage(data)
 
-	messageHash, err := typedData.GetMessageHash(types.HexToBN(publicAddress), typedDataMessage, caigo.Curve)
+	messageHash, err := typedData.GetMessageHash(utils.HexToBN(publicAddress), typedDataMessage, curve.Curve)
 	if err != nil {
 		return err
 	}
@@ -77,12 +77,11 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 
 	if !valid {
 		buggedTypedDataMessage := starknetTypedData.CreateBuggedStarknetAuthorizationTypedDataMessage(data)
-		fmt.Printf("Bugged message: %v\n", buggedTypedDataMessage)
-		buggedMessageHash, err := typedData.GetMessageHash(types.HexToBN(publicAddress), buggedTypedDataMessage, caigo.Curve)
+
+		buggedMessageHash, err := typedData.GetMessageHash(utils.HexToBN(publicAddress), buggedTypedDataMessage, curve.Curve)
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Bugged message hash: %s\n", buggedMessageHash)
 
 		validBugged, _ := starknetClient.IsValidSignature(ctx, publicAddress, buggedMessageHash, finalSignature)
 
