@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/anima-protocol/anima-go/chains/starknet/errors"
-	ethrpc "github.com/ethereum/go-ethereum/rpc"
 )
 
 type StarknetClient struct {
@@ -17,12 +16,12 @@ type StarknetClient struct {
 }
 
 func NewStarknetClient(providerUrl string) *StarknetClient {
-	c, err := ethrpc.DialContext(context.Background(), providerUrl)
+	provider, err := rpc.NewProvider(providerUrl)
 	if err != nil {
 		panic(err)
 	}
 	return &StarknetClient{
-		provider: rpc.NewProvider(c),
+		provider: provider,
 	}
 }
 

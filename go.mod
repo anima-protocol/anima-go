@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/NethermindEth/juno v0.3.1
-	github.com/NethermindEth/starknet.go v0.6.0
+	github.com/NethermindEth/starknet.go v0.7.0
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/ethereum/go-ethereum v1.13.4
 	github.com/joho/godotenv v1.4.0
