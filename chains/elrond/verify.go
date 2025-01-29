@@ -35,7 +35,7 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 	}
 
 	if hrp != ElrondHrp {
-		return fmt.Errorf("invalid hrp from public addres: %s", hrp)
+		return fmt.Errorf("invalid hrp from public address: %s", hrp)
 	}
 
 	converted, err := bech32.ConvertBits(decodedBech32Addr, 5, 8, false)
