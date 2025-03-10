@@ -5,13 +5,12 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/NethermindEth/starknet.go/curve"
-	"github.com/NethermindEth/starknet.go/utils"
 	"github.com/anima-protocol/anima-go/chains/starknet/client"
 	"github.com/anima-protocol/anima-go/chains/starknet/starknetTypedData"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/NethermindEth/starknet.go/utils"
 )
 
 type StarknetSignature struct {
@@ -27,7 +26,7 @@ type Signature struct {
 
 func VerifyPersonalSignature(publicAddress string, data []byte, userSignature string, rpcProviderUrl string) error {
 	ctx := context.Background()
-	//convert userSignature hex string to bytes
+	// convert userSignature hex string to bytes
 	sigHex, err := hexutil.Decode(userSignature)
 	if err != nil {
 		return err
@@ -39,14 +38,17 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 		return err
 	}
 
-	typedData, err := starknetTypedData.CreateStarknetAuthorizationTypedDataDefinition(sig.ChainId)
+	typedDataMessage, err := starknetTypedData.CreateStarknetAuthorizationTypedDataMessage(data)
 	if err != nil {
 		return err
 	}
 
-	typedDataMessage := starknetTypedData.CreateStarknetAuthorizationTypedDataMessage(data)
+	typedData, err := starknetTypedData.CreateStarknetAuthorizationTypedDataDefinition(sig.ChainId, typedDataMessage)
+	if err != nil {
+		return err
+	}
 
-	messageHash, err := typedData.GetMessageHash(utils.HexToBN(publicAddress), typedDataMessage, curve.Curve)
+	messageHash, err := typedData.GetMessageHash(publicAddress)
 	if err != nil {
 		return err
 	}
@@ -70,24 +72,13 @@ func VerifyPersonalSignature(publicAddress string, data []byte, userSignature st
 
 	starknetClient := client.NewStarknetClient(rpcProviderUrl)
 
-	valid, err := starknetClient.IsValidSignature(ctx, publicAddress, messageHash, finalSignature)
+	valid, err := starknetClient.IsValidSignature(ctx, publicAddress, utils.FeltToBigInt(messageHash), finalSignature)
 	if err != nil {
 		return err
 	}
 
 	if !valid {
-		buggedTypedDataMessage := starknetTypedData.CreateBuggedStarknetAuthorizationTypedDataMessage(data)
-
-		buggedMessageHash, err := typedData.GetMessageHash(utils.HexToBN(publicAddress), buggedTypedDataMessage, curve.Curve)
-		if err != nil {
-			return err
-		}
-
-		validBugged, _ := starknetClient.IsValidSignature(ctx, publicAddress, buggedMessageHash, finalSignature)
-
-		if !validBugged {
-			return fmt.Errorf("invalid signature")
-		}
+		return fmt.Errorf("invalid signature")
 	}
 
 	return nil

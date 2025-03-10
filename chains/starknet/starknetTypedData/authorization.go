@@ -1,108 +1,65 @@
 package starknetTypedData
 
 import (
-	"fmt"
-	"github.com/NethermindEth/starknet.go/typed"
-	"github.com/NethermindEth/starknet.go/utils"
+	"encoding/json"
+	"github.com/NethermindEth/starknet.go/typedData"
 	"github.com/anima-protocol/anima-go/crypto"
-	"math/big"
-	"regexp"
 )
 
 type StarknetAuthorizationMessage struct {
-	Hash0 string
-	Hash1 string
-	Hash2 string
+	Hash0 string `json:"hash0"`
+	Hash1 string `json:"hash1"`
+	Hash2 string `json:"hash2"`
 }
 
-type BuggedStarknetAuthorizationMessage struct {
-	Hash0 string
-	Hash1 string
-	Hash2 string
-}
+func CreateStarknetAuthorizationTypedDataDefinition(
+	chainId string,
+	message []byte,
+) (td *typedData.TypedData, err error) {
+	var animaTypes []typedData.TypeDefinition
 
-var digitCheck = regexp.MustCompile(`^[0-9]+$`)
-
-func (m BuggedStarknetAuthorizationMessage) FmtDefinitionEncoding(field string) (fmtEnc []*big.Int) {
-	if field == "hash0" {
-		if digitCheck.MatchString(m.Hash0) {
-			fmtEnc = append(fmtEnc, utils.StrToBig(m.Hash0))
-		} else {
-			fmtEnc = append(fmtEnc, utils.UTF8StrToBig(m.Hash0))
-		}
-	} else if field == "hash1" {
-		if digitCheck.MatchString(m.Hash1) {
-			fmtEnc = append(fmtEnc, utils.StrToBig(m.Hash1))
-		} else {
-			fmtEnc = append(fmtEnc, utils.UTF8StrToBig(m.Hash1))
-		}
-	} else if field == "hash2" {
-		fmt.Printf("hash2: %s\n", m.Hash2)
-		if digitCheck.MatchString(m.Hash2) {
-			fmt.Printf("hash2 is digit\n")
-			fmtEnc = append(fmtEnc, utils.StrToBig(m.Hash2))
-		} else {
-			fmtEnc = append(fmtEnc, utils.UTF8StrToBig(m.Hash2))
-		}
+	domDefs := []typedData.TypeParameter{
+		{Name: "name", Type: "felt"},
+		{Name: "chainId", Type: "felt"},
+		{Name: "version", Type: "felt"},
 	}
 
-	return fmtEnc
-}
+	animaTypes = append(
+		animaTypes, typedData.TypeDefinition{
+			Name:       "StarkNetDomain",
+			Parameters: domDefs,
+		},
+	)
 
-func (m StarknetAuthorizationMessage) FmtDefinitionEncoding(field string) (fmtEnc []*big.Int) {
-	if field == "hash0" {
-		fmtEnc = append(fmtEnc, utils.UTF8StrToBig(m.Hash0))
-	} else if field == "hash1" {
-		fmtEnc = append(fmtEnc, utils.UTF8StrToBig(m.Hash1))
-	} else if field == "hash2" {
-		fmtEnc = append(fmtEnc, utils.UTF8StrToBig(m.Hash2))
+	msgDefs := []typedData.TypeParameter{
+		{Name: "hash0", Type: "felt"},
+		{Name: "hash1", Type: "felt"},
+		{Name: "hash2", Type: "felt"},
 	}
+	animaTypes = append(
+		animaTypes, typedData.TypeDefinition{
+			Name:       "Message",
+			Parameters: msgDefs,
+		},
+	)
 
-	return fmtEnc
-}
-
-func CreateStarknetAuthorizationTypedDataDefinition(chainId string) (td typed.TypedData, err error) {
-	animaTypes := make(map[string]typed.TypeDef)
-
-	domDefs := []typed.Definition{
-		{"name", "felt"},
-		{"chainId", "felt"},
-		{"version", "felt"},
-	}
-	animaTypes["StarkNetDomain"] = typed.TypeDef{Definitions: domDefs}
-
-	msgDefs := []typed.Definition{
-		{"hash0", "felt"},
-		{"hash1", "felt"},
-		{"hash2", "felt"},
-	}
-	animaTypes["Message"] = typed.TypeDef{Definitions: msgDefs}
-
-	domain := typed.Domain{
+	domain := typedData.Domain{
 		Name:    "Anima",
 		Version: "1.0.0",
 		ChainId: chainId,
 	}
 
-	return typed.NewTypedData(animaTypes, "Message", domain)
+	return typedData.NewTypedData(animaTypes, "Message", domain, message)
 }
 
-func CreateStarknetAuthorizationTypedDataMessage(data []byte) StarknetAuthorizationMessage {
+func CreateStarknetAuthorizationTypedDataMessage(data []byte) ([]byte, error) {
 	hash := crypto.HashSHA256(data)
 
-	return StarknetAuthorizationMessage{
+	m := StarknetAuthorizationMessage{
 		Hash0: hash[:31],
 		Hash1: hash[31:62],
 		Hash2: hash[62:],
 	}
-}
 
-func CreateBuggedStarknetAuthorizationTypedDataMessage(data []byte) BuggedStarknetAuthorizationMessage {
-	hash := crypto.HashSHA256(data)
-
-	return BuggedStarknetAuthorizationMessage{
-		Hash0: hash[:31],
-		Hash1: hash[31:62],
-		Hash2: hash[62:],
-	}
+	return json.Marshal(m)
 }
